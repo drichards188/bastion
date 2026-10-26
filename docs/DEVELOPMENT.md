@@ -15,7 +15,8 @@ The development server uses port 5202. `npm run preview` serves the production b
 
 | File | Responsibility |
 |---|---|
-| `src/boot.js` | Title and loading screens. Imports nothing, so the title shows at once; TAKE COMMAND (or `?play=1`, or a restart's `?seed=`) imports `main.js` behind the loading screen. |
+| `src/boot.js` | Title and loading screens. Imports only the WebGL check, so the title shows at once; TAKE COMMAND (or `?play=1`, or a restart's `?seed=`) imports `main.js` behind the loading screen. |
+| `src/gpu.js` | The WebGL check on the title: with no WebGL (graphics acceleration off) a card says how to turn it on and TAKE COMMAND stays off; a software renderer gets a card with PLAY ANYWAY, kept away for the session once dismissed and never shown under `navigator.webdriver`. |
 | `src/main.js` | Builds the world in stages (reporting to the loading screen, then precompiling shaders) and starts the mission; scene, camera modes, input, UI integration, the fire-control coach, visual/audio effects and frame loop. |
 | `src/fire-cues.js` | Fire-control sound: Russian crew callouts over a shipboard intercom chain with subtitles, and synthesized machinery for each step (lock tones, relays, pumps, flooding, hatches, the Fort drum ratchet, the arming switch, the firing howler), driven by the fire-control state. |
 | `tools/make-voices.py`, `tools/voice-lines.json` | Offline generator for `public/audio/voice/` (Piper TTS); the JSON holds each line's Russian text, stress-marked TTS text, English subtitle, speaker and synthesis settings. |

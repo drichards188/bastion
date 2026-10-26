@@ -1,10 +1,13 @@
-// Title screen and loading screen. This module is tiny and imports nothing, so the title is up as soon as
-// the page is. TAKE COMMAND (or a restart, `?seed=`, or `?play=1`) shows the loading screen and imports
-// main.js, which builds the world and the ship stage by stage, reporting through __orlanBoot.progress,
+// Title screen and loading screen. This module is tiny and imports only the WebGL check, so the title is up
+// as soon as the page is. TAKE COMMAND (or a restart, `?seed=`, or `?play=1`) shows the loading screen and
+// imports main.js, which builds the world and the ship stage by stage, reporting through __orlanBoot.progress,
 // and starts the mission itself when everything is ready.
+import { checkGpu } from './gpu.js';
 
 const $ = (id) => document.getElementById(id);
 let begun = false;
+// without WebGL (graphics acceleration off) gpu.js's card says how to turn it on and the mission never starts
+const gpu = checkGpu();
 
 window.__orlanBoot = {
   progress(text, fraction) {
@@ -23,7 +26,7 @@ window.__orlanBoot = {
 };
 
 async function begin() {
-  if (begun) return;
+  if (begun || gpu === 'none') return;
   begun = true;
   // main.js reads the ship from the URL; keeping it there also makes a restart keep the ship.
   window.__orlanShip = ship;
@@ -69,6 +72,6 @@ function chooseShip(id) {
 for (const card of document.querySelectorAll('[data-ship]')) card.onclick = () => chooseShip(card.dataset.ship);
 chooseShip(ship);
 
-$('start').disabled = false;
+$('start').disabled = gpu === 'none';
 $('start').onclick = begin;
 if (query.has('play') || query.has('seed')) begin();

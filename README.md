@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5202** in a desktop browser with WebGL2. Build with `npm run build`; serve `dist/` over HTTP or upload its contents as an HTML game.
+Open **http://localhost:5202** in a desktop browser with WebGL2 and graphics acceleration on. Build with `npm run build`; serve `dist/` over HTTP or upload its contents as an HTML game.
 
 ## Controls
 

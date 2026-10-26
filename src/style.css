@@ -190,3 +190,12 @@ body.clean #viewport #labels,body.clean #viewport #views,body.clean #viewport #t
 .auto-w{position:absolute;top:6px;right:7px;padding:3px 7px;font-size:7px;letter-spacing:1px;background:#0c1b1f;border:1px solid var(--line);color:#8fa6a1;}
 .auto-w.on{background:#1f4a45;border-color:var(--teal);color:#e8f5ef;}
 .auto-w:hover{color:#fff;}
+
+/* No graphics acceleration (gpu.js): the help card over everything, title and loading screens included. */
+#gpu{z-index:30;background:#051216ee;}
+.gpu-steps{margin:14px 0 4px;padding-left:20px;color:#c9d8d1;font-size:11px;line-height:2;}
+.gpu-steps b{color:#e2e9dc;font-weight:500;}
+.gpu-steps code,#gpu .muted code{color:var(--amber);user-select:all;}
+.gpu-actions{display:flex;gap:6px;margin-top:20px;}
+.gpu-actions button{flex:1;padding:14px 20px;background:#34524a;}
+.gpu-actions button.quiet{background:none;}
