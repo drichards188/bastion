@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Kirov exterior preview</title>
+<style>
+  html, body { margin: 0; background: #8a9aa2; overflow: hidden; }
+  canvas { display: block; }
+  #label { position: absolute; top: 10px; left: 12px; color: #fff; font: 12px monospace; text-shadow: 0 1px 2px #000; }
+</style>
+</head>
+<body>
+<div id="label">KIROV EXTERIOR PREVIEW</div>
+<script type="module">
+// Exterior-only preview. Imports only the exterior module, so work in progress elsewhere
+// cannot break it. URL parameters:
+//   view=bow|aft|side|top|close|mast|bridge|stern  preset cameras matching reference photos
+//   cam=x,y,z  target=x,y,z  fov=deg   explicit camera (ship-local metres)
+//   weapons=0  build without the inline weapons
+//   sun=elevationDeg,azimuthDeg  mono=1 (greyscale, to compare with B/W photos)
+import * as THREE from 'three';
+import { buildExterior } from '../src/models/kirov-exterior.js';
+import { buildShip } from '../src/models/exterior/ship.js';
+
+const q = new URLSearchParams(location.search);
+const num = (k, d) => (q.has(k) ? Number(q.get(k)) : d);
+const vec = (k, d) => (q.has(k) ? q.get(k).split(',').map(Number) : d);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = num('exposure', 1.0);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+document.body.append(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xb9c4c8);
+scene.fog = new THREE.Fog(0xb9c4c8, 900, 4000);
+
+// Sky/sea hemisphere plus one shadowing sun, roughly the game's daytime balance.
+scene.add(new THREE.HemisphereLight(0xdde8f0, 0x3c4a50, num('amb', 0.8)));
+const [sunEl, sunAz] = vec('sun', [38, 210]);
+const sun = new THREE.DirectionalLight(0xfff1dc, 3.2);
+const el = THREE.MathUtils.degToRad(sunEl), az = THREE.MathUtils.degToRad(sunAz);
+sun.position.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(450);
+sun.castShadow = q.get('noshadow') !== '1';
+sun.shadow.mapSize.set(4096, 4096);
+Object.assign(sun.shadow.camera, { left: -190, right: 190, top: 190, bottom: -190, near: 10, far: 900 });
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.12;
+scene.add(sun);
+
+// Environment for metal and glass reflections: a simple gradient sky.
+const pmrem = new THREE.PMREMGenerator(renderer);
+const envScene = new THREE.Scene();
+const envSphere = new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  vertexShader: 'varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+  fragmentShader: 'varying vec3 p; void main(){ float h = normalize(p).y; vec3 c = mix(vec3(.25,.3,.32), vec3(.75,.82,.88), smoothstep(-.2,.6,h)); gl_FragColor = vec4(c,1.); }',
+}));
+envScene.add(envSphere);
+scene.environment = pmrem.fromScene(envScene).texture;
+scene.environmentIntensity = num('env', 0.4);
+
+const water = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.MeshStandardMaterial({ color: 0x2d3f44, roughness: 0.35, metalness: 0.1 }));
+water.rotation.x = -Math.PI / 2;
+water.position.y = -0.05;
+water.receiveShadow = true;
+scene.add(water);
+
+const t0 = performance.now();
+// dev=1 renders the exterior assembly under construction without the public wrapper
+// full=1 composes the game's Kirov (src/models.js: exterior + weapons + bridge) for final comparisons
+const full = q.get('full') === '1' ? (await import('../src/models.js')).buildKirov() : null;
+const ship = full ? { group: full.group, weapons: full.weapons?.group || null, animate: (t, dt) => full.animate(t, dt, {}) } : q.get('dev') === '1'
+  ? (() => { const s = buildShip({ only: q.get('only') ? q.get('only').split(',') : null }); return { group: s.root, weapons: null, animate: (t) => s.update(t), dev: s }; })()
+  : buildExterior({ weapons: q.get('weapons') !== '0' });
+const buildMs = performance.now() - t0;
+scene.add(ship.group);
+
+// Preset cameras. bow: matches refs/photos/kirov-1985-bow.jpg (starboard bow quarter,
+// low, long lens). aft: matches refs/kirov-aft.jpg (high port quarter, looking forward).
+const presets = {
+  // solved from 5 photo correspondences (stem head, stem at the waterline, masthead, forward Top
+  // Dome, stern waterline), rms about 12 px of 3000
+  bow: { cam: [203.62, 2.71, -458.86], target: [119.61, 9.57, -277.49], up: [-0.0054, 0.9992, -0.0403], fov: 10.201 },
+  // solved from 6 correspondences on refs/kirov-aft.jpg (rms about 51 px of 3000; yaw least certain)
+  aft: { cam: [-40.5, 60.7, 407.87], target: [-17.4, 30.56, 211.5], up: [0.0754, 0.9869, -0.1426], fov: 9.605 },
+  side: { cam: [420, 25, 0], target: [0, 22, 0], fov: 34 },
+  // matches the 1983 port-beam frame: camera about 17 m up, slightly abaft the beam, long lens
+  port: { cam: [-1400, 17.5, 40], target: [0, 15, 0], fov: 7.35 },
+  top: { cam: [0, 520, 1], target: [0, 0, 0], fov: 30 },
+  close: { cam: [60, 40, -95], target: [0, 18, -30], fov: 40 },
+  mast: { cam: [55, 48, -50], target: [0, 35, -5], fov: 40 },
+  bridge: { cam: [24, 26, -68], target: [0, 22, -30], fov: 40 },
+  stern: { cam: [45, 22, 170], target: [0, 12, 90], fov: 40 },
+  game: { cam: [180, 75, 180], target: [0, 14, 0], fov: 48 },
+};
+const preset = presets[q.get('view') || 'bow'] || presets.bow;
+const camera = new THREE.PerspectiveCamera(num('fov', preset.fov), innerWidth / innerHeight, 0.3, 9000);
+camera.position.fromArray(vec('cam', preset.cam));
+const target = new THREE.Vector3().fromArray(vec('target', preset.target));
+if (q.has('up') || preset.up) camera.up.fromArray(vec('up', preset.up || [0, 1, 0]));
+camera.lookAt(target);
+
+const mono = q.get('mono') === '1';
+if (mono) document.body.style.filter = 'grayscale(1) contrast(1.05)';
+
+function stats() {
+  let tris = 0, meshes = 0, ext = 0, extTris = 0;
+  const weaponsGroup = ship.weapons;
+  ship.group.traverse(o => {
+    if (!o.isMesh || !o.visible) return;
+    const g = o.geometry, n = g.index ? g.index.count / 3 : g.attributes.position.count / 3;
+    tris += n; meshes++;
+    let p = o, inWeapons = false;
+    while (p) { if (p === weaponsGroup) { inWeapons = true; break; } p = p.parent; }
+    if (!inWeapons) { ext++; extTris += n; }
+  });
+  return { meshes, tris: Math.round(tris), exteriorMeshes: ext, exteriorTris: Math.round(extTris), buildMs: Math.round(buildMs) };
+}
+
+let time = num('t', 1);
+function render() {
+  ship.animate(time, 0.016, {});
+  renderer.info.reset();
+  renderer.render(scene, camera);
+  return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+}
+renderer.info.autoReset = false;
+const first = render();
+window.preview = { ship, scene, camera, renderer, render, stats, first, THREE, setTime(t) { time = t; } };
+document.getElementById('label').textContent = `KIROV EXTERIOR · ${JSON.stringify(stats())} · calls ${first.calls}`;
+window.previewReady = true;
+</script>
+</body>
+</html>
