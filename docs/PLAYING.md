@@ -23,9 +23,9 @@ The firing sequence, keys and coach work the same on both. Slava has her own bri
 
 ## First orders
 
-1. Press **TAKE COMMAND**. The title appears at once; the world, ship, bridge and crew are built behind a loading screen (a few seconds), which also summarises how to fire. The mission starts when loading finishes. SAM defense starts **MANUAL**: you fire every Fort and Osa missile yourself. The AK-630 close-in guns start automatic.
+1. Press **TAKE COMMAND**. The title appears at once; the world, ship, bridge and crew are built behind a loading screen (a few seconds), which also summarises how to fire. The mission starts when loading finishes. Every weapon has its own **AUTO / MANUAL** switch on its card: the missiles start on MANUAL (you fire every round yourself), the AK-630 close-in guns on AUTO.
 2. Select a frigate on the large radar or contact list and select **Granit**. Choose a salvo of two or three rounds with the **SALVO 1 2 3 4** buttons in the FIRE CONTROL heading (or Shift+1 to 4). The radar shades the selected weapon's engagement envelope between its minimum and maximum range; choosing Fort or Osa rescales the scope to show the whole envelope and the target, and against a low target it also marks the radar horizon for that altitude. **ACQUIRE TRACK**, wait for track confirmation, then **PREPARE**. The status line identifies each mechanical/check stage. Once ready, **ARM**, then **FIRE** (or Space) to authorize the salvo. The line under FIRE CONTROL always names the next step and explains a blocked one, the next button pulses, each weapon card says whether it can engage the designated contact, and **Enter** performs the next step. Missiles leave at the launcher's firing interval; assess impacts before ordering another salvo.
-3. Watch the air contacts. **Fort** covers the outer defensive layer. Engage them yourself through the same sequence, or press `A` (SAM DEFENSE AUTO) to let the crews engage automatically.
+3. Watch the air contacts. **Fort** covers the outer defensive layer. Engage them yourself through the same sequence, or switch Fort or Osa to AUTO on its card and its crew engages air threats by itself. An anti-ship weapon on AUTO keeps up to two rounds in flight at each hostile ship. Crews on AUTO leave the target of your own manual sequence alone, so you can mix both. The WEAPONS AUTO button (`A`) sets every weapon automatic, or all manual, and shows ALL, MIXED or OFF.
 4. Use **Osa** against eligible nearby threats. Very low terminal sea-skimmers can be below its engagement floor; automatic **AK-630** guns provide the last layer.
 5. Deploy **chaff** when incoming missiles are close. It is finite and has a cooldown; it is not guaranteed protection.
 6. Check the log, ammunition and ship condition. Continue until the mission debrief appears.
@@ -53,7 +53,8 @@ The firing sequence, keys and coach work the same on both. Slava has her own bri
 | Left / right arrow | Change ordered heading |
 | Up / down arrow | Change ordered speed |
 | `R` | Toggle radar emissions |
-| `A` | Toggle automatic SAM defense (starts manual) |
+| `A` | All weapons automatic, or all manual |
+| `Shift+A` | The selected weapon automatic or manual (also the AUTO / MANUAL switch on its card) |
 | `G` | Toggle the AK-630 close-in guns between automatic and hold fire (starts automatic) |
 | `C` | Deploy chaff |
 | `P` | Pause or resume |
@@ -82,7 +83,7 @@ These are reconstructed playable command steps with game timings, not a claim to
 
 **Fort and Osa are for aircraft and incoming missiles.** A target must meet range and altitude requirements. Early Fort has a substantial inner range boundary, and both systems have a low-altitude limit. A close, low incoming missile can be inappropriate for either SAM.
 
-**AK-630 is automatic.** The close-in guns engage leakers on their own while AK-630 shows AUTO (`G` holds them); this is independent of SAM DEFENSE. The interface reports its ammunition; you do not manually aim its barrels.
+**AK-630 is automatic.** The close-in guns engage leakers on their own while AK-630 shows AUTO (`G` holds them); this is the AK-630's own AUTO switch, also set by WEAPONS AUTO. The interface reports its ammunition; you do not manually aim its barrels.
 
 **Radar matters.** Turning it off can remove air tracks and interrupt supported missile guidance. Reconnaissance surface reports are a separate information source. Radar silence is a command choice, not a free defensive advantage in this scenario.
 

@@ -26,7 +26,7 @@ Open **http://localhost:5202** in a desktop browser with WebGL2. Build with `npm
 
 ## Controls
 
-`1` exterior · `2` bridge · `3` / `F` ride your missile (`Shift+F` an incoming one) · `4` launcher inspection · arrows helm/speed · `Enter` next fire-control step · `Space` authorize armed salvo · `Shift+1`-`4` salvo size · `R` radar · `A` auto SAM defense (starts manual) · `G` AK-630 auto/hold · `C` chaff · `P` pause · `H` hide view labels · `[` / `]` time. Use the radar and dedicated command panel: acquire a track, prepare, arm, then authorize a salvo. [All controls](docs/PLAYING.md).
+`1` exterior · `2` bridge · `3` / `F` ride your missile (`Shift+F` an incoming one) · `4` launcher inspection · arrows helm/speed · `Enter` next fire-control step · `Space` authorize armed salvo · `Shift+1`-`4` salvo size · `R` radar · `A` all weapons auto or manual · `Shift+A` the selected weapon auto or manual · `G` AK-630 auto/hold · `C` chaff · `P` pause · `H` hide view labels · `[` / `]` time. Use the radar and dedicated command panel: acquire a track, prepare, arm, then authorize a salvo. [All controls](docs/PLAYING.md).
 
 ## Status
 

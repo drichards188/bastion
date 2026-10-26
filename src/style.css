@@ -183,3 +183,10 @@ body.clean #viewport #labels,body.clean #viewport #views,body.clean #viewport #t
 .section-title .range-picker button{min-width:30px;height:22px;padding:0 6px;font-size:10px;color:#a9c4bc;background:#132629;border:1px solid var(--line);}
 .section-title .range-picker button:hover{background:#2b4748;color:#fff;}
 .section-title .range-picker button.active{background:#1f4a45;border-color:var(--teal);color:#e8f5ef;}
+
+/* Per-weapon AUTO / MANUAL switch on each weapon card. */
+.weapon-slot{flex:1;position:relative;display:flex;min-width:0;}
+.weapon-slot .weapon{flex:1;}
+.auto-w{position:absolute;top:6px;right:7px;padding:3px 7px;font-size:7px;letter-spacing:1px;background:#0c1b1f;border:1px solid var(--line);color:#8fa6a1;}
+.auto-w.on{background:#1f4a45;border-color:var(--teal);color:#e8f5ef;}
+.auto-w:hover{color:#fff;}

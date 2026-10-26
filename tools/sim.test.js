@@ -53,6 +53,25 @@ test('ship starts with manual SAM fire and automatic AK-630 close-in guns',()=>{
  assert.ok(!s.missiles.some(m=>!m.hostile&&(m.kind==='fort'||m.kind==='osa')),'no SAM fires without an order');assert.equal(s.stats.launched,launched);
  s.toggleCiws();assert.equal(s.player.ciwsAuto,false);
 });
+test('each weapon has its own auto switch; the overall switch sets them all',()=>{
+ const s=new Simulation();s.start();
+ assert.deepEqual({...s.player.auto},{granit:false,fort:false,osa:false,gun:true});
+ // Fort automatic only: aircraft are engaged with Fort, never Osa or Granit.
+ s.setAuto('gun',false);s.setAuto('fort',true);
+ for(let i=0;i<240&&!s.missiles.some(m=>!m.hostile);i++)s.update(0.5);
+ const own=s.missiles.filter(m=>!m.hostile);assert.ok(own.length>0,'Fort crew engages on its own');assert.ok(own.every(m=>m.kind==='fort'));
+ // Anti-ship automatic: Granit goes at a ship, at most two in flight per target.
+ const g=new Simulation();g.start();g.setAllAuto(false);g.setAuto('granit',true);
+ for(let i=0;i<40;i++)g.update(0.5);
+ const granits=g.missiles.filter(m=>!m.hostile&&m.kind==='granit');assert.ok(granits.length>0,'Granit crew engages ships');
+ const perTarget={};for(const m of granits.filter(m=>m.alive))perTarget[m.targetId]=(perTarget[m.targetId]||0)+1;assert.ok(Object.values(perTarget).every(n=>n<=2));
+ // The overall switch: all automatic, then all manual; the compatibility views follow.
+ g.toggleAutoDefense();assert.equal(g.allAuto,true);assert.equal(g.player.autoDefense,true);assert.equal(g.player.ciwsAuto,true);
+ g.toggleAutoDefense();assert.ok(Object.values(g.player.auto).every(v=>v===false));
+ // A manual sequence's target is left alone by the automatic crew.
+ const h=new Simulation();h.start();h.setAllAuto(false);const ship=h.contacts.find(c=>c.type==='ship');h.manualFireTargetId=ship.id;h.setAuto('granit',true);
+ for(let i=0;i<40;i++)h.update(0.5);assert.ok(!h.missiles.some(m=>!m.hostile&&m.targetId===ship.id));
+});
 test('Slava carries her own loadout: 16 Bazalt, 64 Fort, no Granit, and takes heavier damage',()=>{
  const s=new Simulation({ship:'slava'});s.start();s.player.autoDefense=false;s.player.ciwsAuto=false;
  assert.equal(s.player.id,'slava');assert.deepEqual({...s.player.ammo},{bazalt:16,fort:64,osa:40,gun:16000});

@@ -20,6 +20,11 @@ try {
  await page.locator('#start').click();assert.equal(await page.locator('#loading').isVisible(),true);
  await page.waitForFunction(()=>!!window.__orlan?.fireControl,{timeout:120000});await page.evaluate(()=>__orlan.stop());
  assert.equal(await page.locator('#loading').isVisible(),false);assert.equal(await page.locator('#intro').isVisible(),false);assert.equal(await page.evaluate(()=>__orlan.sim.player.autoDefense),false);assert.equal(await page.evaluate(()=>__orlan.sim.player.ciwsAuto),true);
+ const autos=()=>page.evaluate(()=>({...__orlan.sim.player.auto}));
+ await click('[data-auto="fort"]');assert.deepEqual(await autos(),{granit:false,fort:true,osa:false,gun:true});assert.equal(await page.locator('[data-auto="fort"]').textContent(),'AUTO');assert.match(await page.locator('#auto-toggle').textContent(),/MIXED/);
+ await click('#auto-toggle');assert.deepEqual(await autos(),{granit:true,fort:true,osa:true,gun:true});assert.match(await page.locator('#auto-toggle').textContent(),/ALL/);
+ await click('#auto-toggle');assert.deepEqual(await autos(),{granit:false,fort:false,osa:false,gun:false});assert.match(await page.locator('#auto-toggle').textContent(),/OFF/);
+ await click('#ciws-toggle');assert.deepEqual(await autos(),{granit:false,fort:false,osa:false,gun:true});checks.push('per-weapon AUTO switches and the overall switch');
  await click('#sound');checks.push('title shows before loading; TAKE COMMAND loads behind a loading screen and starts the mission with manual SAM fire');
  const layout1440=await checkLayout(1440,900);checks.push('1440 split viewport, renderer buffer and camera aspect agree; radar enlarged');
  // Actual pointer selection on the enlarged scope: no contact-list shortcut.

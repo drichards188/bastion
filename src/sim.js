@@ -34,7 +34,12 @@ export class Simulation {
     this.random = rng(seed); this.seed = seed; this.time = 0; this.accumulator = 0; this.running = false; this.paused = false; this.result = null; this.resultReason = null; this.events = {}; this.launchPoints = {};
     this.nextId = 1; this.contacts = []; this.missiles = []; this.log = []; this.phase = 'AWAITING ORDERS';
     this.stats = {ships:0,planes:0,munitions:0,launched:0,damageTaken:0,encountered:{ships:2,planes:2,munitions:0}};
-    this.player = {id:this.ship.id,pos:new Vector3(),prev:new Vector3(),vel:new Vector3(0,0,-18*KNOT),heading:0,speed:18*KNOT,desiredHeading:0,desiredSpeed:18*KNOT,hp:100,radar:true,autoDefense:false,ciwsAuto:true,ammo:{...this.ship.ammo},systems:{radar:100,propulsion:100,weapons:100}};
+    this.player = {id:this.ship.id,pos:new Vector3(),prev:new Vector3(),vel:new Vector3(0,0,-18*KNOT),heading:0,speed:18*KNOT,desiredHeading:0,desiredSpeed:18*KNOT,hp:100,radar:true,auto:{[this.ship.antiShip]:false,fort:false,osa:false,gun:true},ammo:{...this.ship.ammo},systems:{radar:100,propulsion:100,weapons:100}};
+    // Crew automation is per weapon (player.auto). autoDefense and ciwsAuto remain as views of it:
+    // autoDefense reads true while either SAM crew is automatic and sets both; ciwsAuto is the AK-630s.
+    { const auto=this.player.auto; Object.defineProperties(this.player,{
+      autoDefense:{enumerable:true,get:()=>auto.fort||auto.osa,set:v=>{auto.fort=auto.osa=!!v;}},
+      ciwsAuto:{enumerable:true,get:()=>auto.gun,set:v=>{auto.gun=!!v;}} }); }
     this.cooldowns = {granit:0,bazalt:0,fort:0,osa:0,gun:0,chaff:0}; this.chaffCharges = 8; this.chaffUntil = 0; this.chaffPos = new Vector3(); this.lastAuto = 0; this.lastSweep = -3; this.completedWaves = new Set(); this.missionDuration = 780;
     this.addContact('ship','Sierra 01 · frigate',new Vector3(11500,0,-23500),new Vector3(-4,0,3),{intel:true,nextAttack:110,shots:0});
     this.addContact('ship','Sierra 02 · frigate',new Vector3(-17000,0,-28000),new Vector3(4,0,2),{intel:true,nextAttack:175,shots:0});
@@ -58,8 +63,14 @@ export class Simulation {
   setHeading(degrees) { if(Number.isFinite(degrees)) this.player.desiredHeading = ((degrees%360)+360)%360*Math.PI/180; }
   setSpeed(knots) { if(Number.isFinite(knots)) this.player.desiredSpeed = clamp(knots,0,31)*KNOT; }
   toggleRadar() { this.player.radar = !this.player.radar; this.note(`SEARCH RADAR ${this.player.radar?'TRANSMITTING':'SILENT — SAM guidance unavailable'}.`); }
-  toggleAutoDefense() { this.player.autoDefense = !this.player.autoDefense; this.note(`SAM DEFENSE ${this.player.autoDefense?'AUTOMATIC':'MANUAL: you fire Fort and Osa'}.`); }
-  toggleCiws() { this.player.ciwsAuto = !this.player.ciwsAuto; this.note(`AK-630 CLOSE-IN GUNS ${this.player.ciwsAuto?'AUTOMATIC':'HOLD FIRE'}.`); }
+  // Each weapon's crew engages on its own while its auto is on; manual orders still work alongside.
+  setAuto(kind, on) { const a=this.player.auto; if(!(kind in a)) return false; a[kind]=!!on; this.note(`${kind==='gun'?'AK-630 CLOSE-IN GUNS':WEAPONS[kind].name} ${on?'AUTOMATIC':kind==='gun'?'HOLD FIRE':'MANUAL'}.`); return true; }
+  toggleAuto(kind) { return this.setAuto(kind, !this.player.auto[kind]); }
+  setAllAuto(on) { for(const k of Object.keys(this.player.auto)) this.player.auto[k]=!!on; this.note(on?'ALL WEAPONS AUTOMATIC: the crews engage on their own.':'ALL WEAPONS MANUAL: nothing fires without your order.'); }
+  get allAuto() { return Object.values(this.player.auto).every(Boolean); }
+  // The overall switch: everything automatic, or (from all automatic) everything manual.
+  toggleAutoDefense() { this.setAllAuto(!this.allAuto); }
+  toggleCiws() { this.toggleAuto('gun'); }
   deployChaff() {
     if(!this.running || this.paused || this.result || this.cooldowns.chaff>this.time || !this.chaffCharges) return false;
     this.chaffCharges--; this.cooldowns.chaff=this.time+35; this.chaffUntil=this.time+18; this.chaffPos.copy(this.player.pos).addScaledVector(forward(this.player.heading+Math.PI/2),200);
@@ -147,7 +158,7 @@ export class Simulation {
       if(seen||c.intel) { if(!c.detected && c.type==='munition') this.events.incoming?.(c); if(!c.detected && c.type==='munition') this.note(`INCOMING MISSILE · bearing ${((Math.atan2(c.pos.x-p.pos.x,p.pos.z-c.pos.z)*180/Math.PI+360)%360).toFixed(0)}°`); c.detected=true;c.lastSeen=this.time; }
       else if(this.time-c.lastSeen>8)c.detected=false;
     } }
-    if((p.autoDefense||p.ciwsAuto) && this.time-this.lastAuto>=0.25) { this.lastAuto=this.time;this.automaticDefense(); }
+    if(Object.values(p.auto).some(Boolean) && this.time-this.lastAuto>=0.25) { this.lastAuto=this.time;this.automaticDefense(); }
     for(const m of this.missiles) if(m.alive) this.updateMissile(m,dt);
     if(p.hp<=0) this.finish('defeat','KIROV LOST. Damage-control teams cannot contain the flooding.');
     else if(this.time>=640 && !this.contacts.some(c=>c.alive) && !this.missiles.some(m=>m.alive&&m.hostile)) this.finish('victory','MISSION COMPLETE. Surface group disabled; incoming raid defeated.');
@@ -188,12 +199,21 @@ export class Simulation {
   }
   automaticDefense() {
     const p=this.player,targets=this.contacts.filter(c=>c.alive&&c.detected&&c.type!=='ship').sort((a,b)=>(a.type==='munition'?0:1)-(b.type==='munition'?0:1)||a.pos.distanceToSquared(p.pos)-b.pos.distanceToSquared(p.pos));
-    if(p.autoDefense) for(const c of targets) {
+    // SAMs: one round per air target from the first automatic crew that can engage it.
+    if(p.auto.fort||p.auto.osa) for(const c of targets) {
       if(c.id===this.manualFireTargetId)continue;
       const assigned=this.missiles.filter(m=>m.alive&&!m.hostile&&m.targetId===c.id).length;
-      if(!assigned) { for(const kind of ['fort','osa']) if(this.canFire(kind,c.id).ok) { this.fire(kind,c.id);break; } }
+      if(!assigned) { for(const kind of ['fort','osa']) if(p.auto[kind]&&this.canFire(kind,c.id).ok) { this.fire(kind,c.id);break; } }
     }
-    if(!p.ciwsAuto||this.time<this.cooldowns.gun||p.ammo.gun<=0||p.systems.weapons<15||!p.radar||p.systems.radar<15)return;
+    // Anti-ship: keep up to two rounds in flight at each detected hostile ship, so the crew assesses
+    // each pair before firing again; the player's own designated target is left to the player.
+    const anti=this.ship.antiShip;
+    if(p.auto[anti]) for(const c of this.contacts) {
+      if(!c.alive||!c.detected||c.type!=='ship'||c.id===this.manualFireTargetId)continue;
+      const inFlight=this.missiles.filter(m=>m.alive&&!m.hostile&&m.kind===anti&&m.targetId===c.id).length;
+      if(inFlight<2&&this.canFire(anti,c.id).ok) { this.fire(anti,c.id);break; }
+    }
+    if(!p.auto.gun||this.time<this.cooldowns.gun||p.ammo.gun<=0||p.systems.weapons<15||!p.radar||p.systems.radar<15)return;
     const close=targets.filter(c=>c.pos.distanceTo(p.pos)<WEAPONS.gun.range).slice(0,2);
     if(!close.length)return; this.cooldowns.gun=this.time+0.2;
     for(const c of close) {

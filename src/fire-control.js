@@ -46,7 +46,8 @@ export class FireControl {
   }
 
   _claim() {
-    if (!ANTI_SHIP.has(this.state.weapon)) this.sim.manualFireTargetId = this.state.targetId;
+    // The automatic crews leave the player's target alone while a manual sequence holds it.
+    this.sim.manualFireTargetId = this.state.targetId;
   }
 
   _valid({ cooldown = false, inventory = true } = {}) {
