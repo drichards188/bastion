@@ -1,0 +1,7 @@
+node_modules/
+dist/
+shots/
+refs/photos/
+refs/*.html
+refs/*.jpg
+__pycache__/

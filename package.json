@@ -1,0 +1,23 @@
+{
+  "name": "threejs-kirov",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5202",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5202",
+    "test": "node tools/sim.test.js && node tools/fire-control.test.js",
+    "test:browser": "node tools/browser-sequence.mjs",
+    "test:browser:slava": "node tools/browser-slava.mjs"
+  },
+  "dependencies": {
+    "three": "^0.186.1",
+    "lil-gui": "^0.21.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.1",
+    "playwright-core": "^1.64.0"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}
