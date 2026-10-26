@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Kirov crew</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #20262a; color: #dfe5e3; font: 13px system-ui, sans-serif; overflow: hidden; }
+    header { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; align-items: center; gap: 14px; padding: 8px 14px; background: #161b1ecc; z-index: 2; }
+    header strong { margin-right: auto; letter-spacing: 0.04em; }
+    label { display: flex; align-items: center; gap: 6px; }
+    select, button { color: inherit; background: #2b3337; border: 1px solid #47535a; font: inherit; padding: 4px 8px; border-radius: 3px; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    #labels { position: absolute; inset: 0; pointer-events: none; }
+    #labels span { position: absolute; transform: translate(-50%, 0); font-size: 11px; color: #e9eee9; background: #0008; padding: 1px 5px; border-radius: 2px; white-space: nowrap; }
+    #info { position: absolute; left: 14px; bottom: 10px; font-size: 11px; color: #a9b6b2; }
+    body.shot header, body.shot #info { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Kirov crew, 1985</strong>
+    <label>View <select id="view">
+      <option value="lineup">Outfit lineup</option>
+      <option value="poses">Every pose</option>
+      <option value="one">One pose</option>
+      <option value="close">Close-up (bridge distance)</option>
+      <option value="bridge">Bridge stations</option>
+    </select></label>
+    <label>Outfit <select id="outfit"></select></label>
+    <label>Pose <select id="pose"><option value="">(role default)</option></select></label>
+    <label>Light <select id="light"><option value="day">Overcast deck</option><option value="bridge">Bridge interior</option><option value="studio">Studio</option><option value="game">Game sky and post</option></select></label>
+    <button id="play">Pause</button>
+  </header>
+  <div id="labels"></div>
+  <div id="info"></div>
+  <script type="module" src="./crew.js"></script>
+</body>
+</html>
