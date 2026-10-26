@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kirov weapons preview</title>
+  <link rel="icon" href="data:," />
+  <style>
+    html, body { margin: 0; height: 100%; background: #0d1416; color: #cfe0da; font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace; overflow: hidden; }
+    canvas { display: block; }
+    #panel { position: absolute; top: 10px; left: 10px; background: #0b1214d9; border: 1px solid #2b4b45; padding: 10px; max-width: 360px; }
+    #panel h1 { font-size: 12px; letter-spacing: 0.12em; margin: 0 0 8px; color: #9ad4ba; }
+    #panel .row { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 8px; }
+    #panel button { background: #12201f; color: #cfe0da; border: 1px solid #2b4b45; padding: 4px 7px; font: inherit; cursor: pointer; }
+    #panel button.on { background: #24443d; border-color: #9ad4ba; }
+    #status { color: #e4c583; min-height: 2.8em; white-space: pre-wrap; }
+    body.clean #panel { display: none; }
+  </style>
+</head>
+<body>
+  <div id="panel">
+    <h1>KIROV WEAPONS / PREVIEW</h1>
+    <div>weapon</div><div class="row" id="weapons"></div>
+    <div>sequence</div><div class="row" id="stages"></div>
+    <div>view</div><div class="row" id="views"></div>
+    <div>posture</div><div class="row" id="posture"></div>
+    <div id="status"></div>
+  </div>
+  <script type="module" src="./weapons.js"></script>
+</body>
+</html>
