@@ -17,7 +17,7 @@ The simulation runs in fixed 0.05-second steps and can run without a browser. It
 - **Ship handling:** course changes and acceleration take time. Propulsion damage limits speed.
 - **Sensors:** contacts depend on radar state, range, sweep updates and a simplified radar horizon. Reconnaissance supplies initial surface intelligence.
 - **Weapons:** finite magazines, launch intervals, moving launch positions, minimum/maximum range, altitude gates, missile acceleration and turn limits.
-- **Guidance:** Fort and Osa depend on continuing radar support; prolonged guidance loss terminates the engagement. Granit follows a simplified cruise/terminal profile.
+- **Guidance:** Fort and Osa depend on continuing radar support; prolonged guidance loss terminates the engagement. Granit and Bazalt leave along the launcher on their boosters, then turn under a g limit, cruise low (or high on long shots) and run in at sea-skimming height; `ASM` in `src/sim.js` separates the documented figures from the estimates.
 - **Defense:** automatic crews select threats; Fort and Osa have limited target channels; AK-630 uses short-range bursts and ammunition. Chaff can divert some incoming seekers.
 - **Damage:** hull integrity and radar, propulsion and weapons condition are simplified game state, not structural or blast calculations.
 

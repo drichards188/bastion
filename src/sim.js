@@ -4,7 +4,7 @@ import { Vector3 } from 'three';
 // Guidance/closest-approach and fixed-step design adapted from Echelon's simulation.
 // Source discussion and fit uncertainties: docs/HISTORY.md.
 export const WEAPONS = {
-  granit: { name: 'P-700 GRANIT', designation: 'SS-N-19', range: 550000, minRange: 7000, speed: 550, highSpeed: 750, minAlt: 0, maxAlt: 50, ammo: 20, interval: 3, channels: 20, turn: 0.32, fuze: 24, damage: 72, description: 'Active radar anti-ship · low profile Mach ~1.6; high profile ~2.5 · 750 kg conventional warhead' },
+  granit: { name: 'P-700 GRANIT', designation: 'SS-N-19', range: 550000, minRange: 7000, speed: 510, highSpeed: 750, minAlt: 0, maxAlt: 50, ammo: 20, interval: 3, channels: 20, turn: 0.32, fuze: 24, damage: 72, description: 'Active radar anti-ship · Mach ~1.5 at sea level, ~2.5 at high altitude · 750 kg conventional warhead' },
   bazalt: { name: 'P-500 BAZALT', designation: 'SS-N-12', range: 550000, minRange: 7000, speed: 650, highSpeed: 750, minAlt: 0, maxAlt: 50, ammo: 16, interval: 8, channels: 16, turn: 0.3, fuze: 24, damage: 85, description: 'Active radar anti-ship · Mach ~2.5 at altitude, ~2 on the final run · 1,000 kg conventional warhead · 8 s between rounds' },
   fort: { name: 'S-300F FORT', designation: '5V55RM / SA-N-6', range: 75000, minRange: 7000, speed: 1700, minAlt: 25, maxAlt: 25000, ammo: 96, interval: 3, channels: 6, turn: 1.3, fuze: 35, damage: 100, description: 'Radar-supported area defense · 7–75 km · 25–25,000 m · six target channels' },
   osa: { name: 'OSA-M', designation: '9M33 / SA-N-4', range: 10000, minRange: 1500, speed: 500, minAlt: 25, maxAlt: 5000, ammo: 40, interval: 8, channels: 2, turn: 1.8, fuze: 18, damage: 100, description: 'Command-guided point defense · 1.5–10 km · 25–5,000 m · two directors' },
@@ -13,6 +13,23 @@ export const WEAPONS = {
 };
 // Anti-ship missiles share guidance, targeting and launch rules.
 export const ANTI_SHIP = new Set(['granit', 'bazalt']);
+// Anti-ship flight profiles (docs/MODELLED.md, Simulation). Documented: Granit flies at Mach ~1.5
+// low and ~2.5 high, cruises at about 14,000 m on long shots and runs in at about 25 m; Bazalt flies
+// a high-low profile, up to about 5 km high and 40 to 50 m low, at Mach 2 to 2.5, off two solid
+// boosters burning about 2 s; once its wings unfold the ship's Argon datalink brings it onto course.
+// Estimated (no published figures): booster thrust (Granit's burn time too), how long each flies
+// the launcher's line, the g available to turn, the ranges at which each switches to its high
+// profile, and the length of the low attack run. Slava's containers lie only 4 to 7 m off the
+// centreline, so a Bazalt bound for a target on the other side crosses the bow as soon as it turns.
+//   boost       s of booster burn
+//   boostAccel  m/s2 while the booster burns
+//   straight    s of unguided flight along the launcher's axis before guidance starts
+//   climbG      g available to pitch over and turn in the first seconds of guided flight
+//   g           g available to turn in cruise (turns at Mach 1.5 are kilometres wide)
+export const ASM = {
+  granit: { boost: 2.5, boostAccel: 120, straight: 2.5, climbG: 8, g: 6, cruiseLow: 25, cruiseHigh: 14000, highBeyond: 100000, attackLeg: 40000 },
+  bazalt: { boost: 2, boostAccel: 150, straight: 2.5, climbG: 4, g: 5, cruiseLow: 45, cruiseHigh: 5000, highBeyond: 60000, attackLeg: 30000 },
+};
 // Playable ships. Magazines and the anti-ship weapon differ; Fort, Osa and the AK-630s work the same.
 // damageScale: Slava displaces about half as much as Kirov, so each hit costs her more integrity.
 export const SHIPS = {
@@ -239,9 +256,20 @@ export class Simulation {
     if(!m.hostile && !ANTI_SHIP.has(m.kind) && (!p.radar||p.systems.radar<15||!t.detected)) {m.blind+=dt;if(m.blind>3){m.alive=false;this.events.explosion?.(m.pos.clone(),0.3);return;}} else m.blind=0;
     let targetSpeed=w.speed;
     if(ANTI_SHIP.has(m.kind)) {
-      const high=m.profile==='high'||(m.profile!=='low'&&m.launchPos.distanceTo(t.pos)>100000);targetSpeed=high&&dist>22000?w.highSpeed:w.speed;
+      const P=ASM[m.kind],high=m.profile==='high'||(m.profile!=='low'&&m.launchPos.distanceTo(t.pos)>P.highBeyond);
+      // Cruise height: low over the sea, or high on long shots, gliding down (about 8.5 degrees) to
+      // reach the low attack run with attackLeg still to go; the last 3 km close on the target itself.
+      const cruise=high?clamp((dist-P.attackLeg)*0.15,P.cruiseLow,P.cruiseHigh):P.cruiseLow;
+      // Faster in the thin air up high: Mach 2.5 near the top of the profile, sea-level speed low down.
+      targetSpeed=w.speed+(w.highSpeed-w.speed)*clamp(m.pos.y/(P.cruiseHigh*0.6),0,1);
       aim.addScaledVector(t.vel||new Vector3(),Math.min(dist/targetSpeed,45));
-      aim.y=dist>7000?(high?Math.min(10000,dist*0.12):60):6;
+      // Hold the cruise height instead of flying a straight line at the target: steer for a point a
+      // short way ahead on the horizontal track, raised or lowered by the height error (at most about
+      // 15 degrees of climb or dive). The last 3 km close on the target itself.
+      if(dist>3000) {
+        const look=2500,hx=aim.x-m.pos.x,hz=aim.z-m.pos.z,hl=Math.hypot(hx,hz)||1;
+        aim.set(m.pos.x+hx/hl*look,m.pos.y+clamp(cruise-m.pos.y,-look*0.27,look*0.27),m.pos.z+hz/hl*look);
+      } else aim.y=6;
     } else if(m.hostile) {
       aim.addScaledVector(p.vel,Math.min(dist/267,15));
       aim.y=dist<9000?15:m.cruiseAltitude;
@@ -250,8 +278,21 @@ export class Simulation {
     } else aim.addScaledVector(t.vel||new Vector3(),Math.min(dist/Math.max(m.speed+250,300),12));
     if(m.kind==='fort'&&m.age<0.9){m.speed=Math.max(12,m.speed-9.81*dt);} else {
       if(m.kind==='fort'&&!m.motor){m.motor=true;this.events.ignite?.(m);}
-      m.speed+=Math.min(targetSpeed-m.speed,(m.hostile?80:m.kind==='fort'?420:140)*dt);
-      if(!m.blind)turn(m.fwd,aim.sub(m.pos).normalize(),w.turn,dt);
+      if(ANTI_SHIP.has(m.kind)) {
+        // Booster: straight out along the launcher, unguided, accelerating to about Mach 1. The
+        // sustainer then holds speed; once the straight leg is flown the missile pitches over and
+        // turns under a g limit.
+        const P=ASM[m.kind];
+        if(m.age<P.boost) m.speed+=P.boostAccel*dt;
+        else m.speed+=clamp(targetSpeed-m.speed,-60*dt,60*dt);
+        if(m.age>=P.straight) {
+          const g=m.age<P.straight+6?P.climbG:P.g;
+          turn(m.fwd,aim.sub(m.pos).normalize(),Math.min(w.turn,g*9.81/Math.max(m.speed,80)),dt);
+        }
+      } else {
+        m.speed+=Math.min(targetSpeed-m.speed,(m.hostile?80:m.kind==='fort'?420:140)*dt);
+        if(!m.blind)turn(m.fwd,aim.sub(m.pos).normalize(),w.turn,dt);
+      }
     }
     m.vel.copy(m.fwd).multiplyScalar(m.speed);m.pos.addScaledVector(m.vel,dt);m.distance+=m.speed*dt;
     if(m.carry){const k=m.age<1?1:Math.max(0,1-(m.age-1)/2);m.pos.addScaledVector(m.carry,dt*k);if(!k)m.carry=null;}
