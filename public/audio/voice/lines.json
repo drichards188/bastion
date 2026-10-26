@@ -1,0 +1,275 @@
+{
+ "battle_stations": {
+  "file": "battle_stations.mp3",
+  "speaker": "officer",
+  "ru": "Боевая тревога!",
+  "en": "Battle stations!",
+  "seconds": 1.09
+ },
+ "designated": {
+  "file": "designated.mp3",
+  "speaker": "operator",
+  "ru": "Цель принята.",
+  "en": "Target received.",
+  "seconds": 0.74
+ },
+ "acquire": {
+  "file": "acquire.mp3",
+  "speaker": "officer",
+  "ru": "Захватить цель.",
+  "en": "Acquire the target.",
+  "seconds": 1.1
+ },
+ "tracked": {
+  "file": "tracked.mp3",
+  "speaker": "operator",
+  "ru": "Есть захват. Цель на сопровождении.",
+  "en": "Locked on. Target tracked.",
+  "seconds": 2.13
+ },
+ "tracked_recon": {
+  "file": "tracked_recon.mp3",
+  "speaker": "operator",
+  "ru": "Целеуказание принято.",
+  "en": "Targeting data received.",
+  "seconds": 1.21
+ },
+ "prepare_granit": {
+  "file": "prepare_granit.mp3",
+  "speaker": "officer",
+  "ru": "Комплекс Гранит, к бою!",
+  "en": "Granit, to action!",
+  "seconds": 1.43
+ },
+ "prepare_fort": {
+  "file": "prepare_fort.mp3",
+  "speaker": "officer",
+  "ru": "Комплекс Форт, к бою!",
+  "en": "Fort, to action!",
+  "seconds": 1.35
+ },
+ "prepare_osa": {
+  "file": "prepare_osa.mp3",
+  "speaker": "officer",
+  "ru": "Комплекс Оса, к бою!",
+  "en": "Osa, to action!",
+  "seconds": 1.41
+ },
+ "prepare_bazalt": {
+  "file": "prepare_bazalt.mp3",
+  "speaker": "officer",
+  "ru": "Комплекс Базальт, к бою!",
+  "en": "Bazalt, to action!",
+  "seconds": 1.45
+ },
+ "step_granit_0": {
+  "file": "step_granit_0.mp3",
+  "speaker": "operator",
+  "ru": "Данные целеуказания введены.",
+  "en": "Targeting data entered.",
+  "seconds": 1.45
+ },
+ "step_granit_1": {
+  "file": "step_granit_1.mp3",
+  "speaker": "operator",
+  "ru": "Заполнение пусковых.",
+  "en": "Flooding the launchers.",
+  "seconds": 1.15
+ },
+ "step_granit_2": {
+  "file": "step_granit_2.mp3",
+  "speaker": "operator",
+  "ru": "Крышки пусковых открываются.",
+  "en": "Launcher lids opening.",
+  "seconds": 1.55
+ },
+ "step_fort_0": {
+  "file": "step_fort_0.mp3",
+  "speaker": "operator",
+  "ru": "Канал стрельбы назначен.",
+  "en": "Fire channel assigned.",
+  "seconds": 1.2
+ },
+ "step_fort_1": {
+  "file": "step_fort_1.mp3",
+  "speaker": "operator",
+  "ru": "Поворот барабана.",
+  "en": "Indexing the drum.",
+  "seconds": 0.98
+ },
+ "step_fort_2": {
+  "file": "step_fort_2.mp3",
+  "speaker": "operator",
+  "ru": "Контроль пуска.",
+  "en": "Launch check.",
+  "seconds": 0.82
+ },
+ "step_osa_0": {
+  "file": "step_osa_0.mp3",
+  "speaker": "operator",
+  "ru": "Пусковая на подъёме.",
+  "en": "Launcher rising.",
+  "seconds": 1.1
+ },
+ "step_osa_1": {
+  "file": "step_osa_1.mp3",
+  "speaker": "operator",
+  "ru": "Наведение пусковой.",
+  "en": "Laying the launcher.",
+  "seconds": 1.18
+ },
+ "step_osa_2": {
+  "file": "step_osa_2.mp3",
+  "speaker": "operator",
+  "ru": "Проверка командной линии.",
+  "en": "Checking the command link.",
+  "seconds": 1.3
+ },
+ "step_bazalt_0": {
+  "file": "step_bazalt_0.mp3",
+  "speaker": "operator",
+  "ru": "Данные целеуказания введены.",
+  "en": "Targeting data entered.",
+  "seconds": 1.55
+ },
+ "step_bazalt_1": {
+  "file": "step_bazalt_1.mp3",
+  "speaker": "operator",
+  "ru": "Крышки контейнеров открываются.",
+  "en": "Container covers opening.",
+  "seconds": 1.7
+ },
+ "step_bazalt_2": {
+  "file": "step_bazalt_2.mp3",
+  "speaker": "operator",
+  "ru": "Запуск маршевых двигателей.",
+  "en": "Starting the sustainer engines.",
+  "seconds": 1.27
+ },
+ "ready": {
+  "file": "ready.mp3",
+  "speaker": "operator",
+  "ru": "Комплекс к стрельбе готов.",
+  "en": "Ready to fire.",
+  "seconds": 1.17
+ },
+ "arm": {
+  "file": "arm.mp3",
+  "speaker": "officer",
+  "ru": "Цепи стрельбы включить.",
+  "en": "Close the firing circuits.",
+  "seconds": 1.38
+ },
+ "armed": {
+  "file": "armed.mp3",
+  "speaker": "operator",
+  "ru": "Цепи включены. Готов к пуску.",
+  "en": "Circuits closed. Ready to launch.",
+  "seconds": 1.94
+ },
+ "fire_1": {
+  "file": "fire_1.mp3",
+  "speaker": "officer",
+  "ru": "Пуск!",
+  "en": "Launch!",
+  "seconds": 0.42
+ },
+ "fire_salvo": {
+  "file": "fire_salvo.mp3",
+  "speaker": "officer",
+  "ru": "Залпом, пуск!",
+  "en": "Salvo, launch!",
+  "seconds": 0.8
+ },
+ "away_1": {
+  "file": "away_1.mp3",
+  "speaker": "operator",
+  "ru": "Первая пошла.",
+  "en": "First away.",
+  "seconds": 0.87
+ },
+ "away_2": {
+  "file": "away_2.mp3",
+  "speaker": "operator",
+  "ru": "Вторая пошла.",
+  "en": "Second away.",
+  "seconds": 0.76
+ },
+ "away_3": {
+  "file": "away_3.mp3",
+  "speaker": "operator",
+  "ru": "Третья пошла.",
+  "en": "Third away.",
+  "seconds": 0.79
+ },
+ "away_4": {
+  "file": "away_4.mp3",
+  "speaker": "operator",
+  "ru": "Четвёртая пошла.",
+  "en": "Fourth away.",
+  "seconds": 0.97
+ },
+ "complete": {
+  "file": "complete.mp3",
+  "speaker": "operator",
+  "ru": "Залп произведён.",
+  "en": "Salvo complete.",
+  "seconds": 0.97
+ },
+ "kill": {
+  "file": "kill.mp3",
+  "speaker": "operator",
+  "ru": "Есть попадание! Цель поражена!",
+  "en": "Hit! Target destroyed!",
+  "seconds": 1.8
+ },
+ "neutralized": {
+  "file": "neutralized.mp3",
+  "speaker": "officer",
+  "ru": "Цель поражена. Отбой.",
+  "en": "Target destroyed. Stand down.",
+  "seconds": 1.93
+ },
+ "abort": {
+  "file": "abort.mp3",
+  "speaker": "officer",
+  "ru": "Отбой стрельбы!",
+  "en": "Cease fire!",
+  "seconds": 1.0
+ },
+ "track_lost": {
+  "file": "track_lost.mp3",
+  "speaker": "operator",
+  "ru": "Сопровождение сорвано.",
+  "en": "Track lost.",
+  "seconds": 1.13
+ },
+ "out_of_zone": {
+  "file": "out_of_zone.mp3",
+  "speaker": "operator",
+  "ru": "Цель вне зоны поражения.",
+  "en": "Target outside the engagement zone.",
+  "seconds": 1.35
+ },
+ "refused": {
+  "file": "refused.mp3",
+  "speaker": "operator",
+  "ru": "Пуск невозможен.",
+  "en": "Unable to launch.",
+  "seconds": 0.87
+ },
+ "incoming": {
+  "file": "incoming.mp3",
+  "speaker": "officer",
+  "ru": "Воздушная тревога! Ракетная атака!",
+  "en": "Air raid! Missile attack!",
+  "seconds": 2.57
+ },
+ "hit_us": {
+  "file": "hit_us.mp3",
+  "speaker": "officer",
+  "ru": "Попадание в корабль! Аварийным партиям действовать!",
+  "en": "We are hit! Damage control, act!",
+  "seconds": 3.07
+ }
+}

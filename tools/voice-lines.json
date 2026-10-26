@@ -1,0 +1,314 @@
+{
+  "_comment": "Crew callouts for the fire-control cycle. speaker: officer (orders) or operator (reports). Regenerate with tools/make-voices.py. Phrasing is game dialogue in plausible Soviet naval style, not a quotation of real drill. 'say' is the text sent to the TTS, with combining acute accents (U+0301) marking stress where the engine would otherwise guess wrong; 'ru' is the subtitle.",
+  "speakers": {
+    "officer": {
+      "voice": "ru_RU-denis-medium",
+      "length_scale": 0.95
+    },
+    "operator": {
+      "voice": "ru_RU-dmitri-medium",
+      "length_scale": 0.9
+    }
+  },
+  "lines": [
+    {
+      "id": "battle_stations",
+      "speaker": "officer",
+      "ru": "Боевая тревога!",
+      "en": "Battle stations!",
+      "say": "Боева́я трево́га!",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "designated",
+      "speaker": "operator",
+      "ru": "Цель принята.",
+      "en": "Target received.",
+      "say": "Цель при́нята.",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "acquire",
+      "speaker": "officer",
+      "ru": "Захватить цель.",
+      "en": "Acquire the target.",
+      "say": "Захвати́ть цель.",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "tracked",
+      "speaker": "operator",
+      "ru": "Есть захват. Цель на сопровождении.",
+      "en": "Locked on. Target tracked.",
+      "say": "Есть захва́т. Цель на сопровожде́нии.",
+      "length_scale": 1.05,
+      "noise_scale": 0.4
+    },
+    {
+      "id": "tracked_recon",
+      "speaker": "operator",
+      "ru": "Целеуказание принято.",
+      "en": "Targeting data received.",
+      "say": "Целеуказа́ние при́нято."
+    },
+    {
+      "id": "prepare_granit",
+      "speaker": "officer",
+      "ru": "Комплекс Гранит, к бою!",
+      "en": "Granit, to action!",
+      "say": "Ко́мплекс Грани́т, к бою́!",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "prepare_fort",
+      "speaker": "officer",
+      "ru": "Комплекс Форт, к бою!",
+      "en": "Fort, to action!",
+      "say": "Ко́мплекс Форт, к бою́!",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "prepare_osa",
+      "speaker": "officer",
+      "ru": "Комплекс Оса, к бою!",
+      "en": "Osa, to action!",
+      "say": "Ко́мплекс Оса́, к бою́!"
+    },
+    {
+      "id": "prepare_bazalt",
+      "speaker": "officer",
+      "ru": "Комплекс Базальт, к бою!",
+      "en": "Bazalt, to action!",
+      "say": "Ко́мплекс База́льт, к бою́!",
+      "length_scale": 1.05
+    },
+    {
+      "id": "step_granit_0",
+      "speaker": "operator",
+      "ru": "Данные целеуказания введены.",
+      "en": "Targeting data entered.",
+      "say": "Да́нные целеуказа́ния введены́."
+    },
+    {
+      "id": "step_granit_1",
+      "speaker": "operator",
+      "ru": "Заполнение пусковых.",
+      "en": "Flooding the launchers.",
+      "say": "Заполне́ние пусковы́х."
+    },
+    {
+      "id": "step_granit_2",
+      "speaker": "operator",
+      "ru": "Крышки пусковых открываются.",
+      "en": "Launcher lids opening.",
+      "say": "Кры́шки пусковы́х открыва́ются."
+    },
+    {
+      "id": "step_fort_0",
+      "speaker": "operator",
+      "ru": "Канал стрельбы назначен.",
+      "en": "Fire channel assigned.",
+      "say": "Кана́л стрельбы́ назна́чен.",
+      "length_scale": 1.05,
+      "noise_scale": 0.4
+    },
+    {
+      "id": "step_fort_1",
+      "speaker": "operator",
+      "ru": "Поворот барабана.",
+      "en": "Indexing the drum.",
+      "say": "Поворо́т бараба́на.",
+      "length_scale": 1.15
+    },
+    {
+      "id": "step_fort_2",
+      "speaker": "operator",
+      "ru": "Контроль пуска.",
+      "en": "Launch check.",
+      "say": "Контро́ль пу́ска.",
+      "length_scale": 1.05
+    },
+    {
+      "id": "step_osa_0",
+      "speaker": "operator",
+      "ru": "Пусковая на подъёме.",
+      "en": "Launcher rising.",
+      "say": "Пускова́я на подъёме."
+    },
+    {
+      "id": "step_osa_1",
+      "speaker": "operator",
+      "ru": "Наведение пусковой.",
+      "en": "Laying the launcher.",
+      "say": "Наведе́ние пусково́й."
+    },
+    {
+      "id": "step_osa_2",
+      "speaker": "operator",
+      "ru": "Проверка командной линии.",
+      "en": "Checking the command link.",
+      "say": "Прове́рка кома́ндной ли́нии."
+    },
+    {
+      "id": "step_bazalt_0",
+      "speaker": "operator",
+      "ru": "Данные целеуказания введены.",
+      "en": "Targeting data entered.",
+      "say": "Да́нные целеуказа́ния введены́.",
+      "length_scale": 1.15
+    },
+    {
+      "id": "step_bazalt_1",
+      "speaker": "operator",
+      "ru": "Крышки контейнеров открываются.",
+      "en": "Container covers opening.",
+      "say": "Кры́шки контейне́ров открыва́ются.",
+      "length_scale": 1.05,
+      "noise_scale": 0.4
+    },
+    {
+      "id": "step_bazalt_2",
+      "speaker": "operator",
+      "ru": "Запуск маршевых двигателей.",
+      "en": "Starting the sustainer engines.",
+      "say": "Запуск ма́ршевых дви́гателей."
+    },
+    {
+      "id": "ready",
+      "speaker": "operator",
+      "ru": "Комплекс к стрельбе готов.",
+      "en": "Ready to fire.",
+      "say": "Ко́мплекс к стрельбе́ гото́в."
+    },
+    {
+      "id": "arm",
+      "speaker": "officer",
+      "ru": "Цепи стрельбы включить.",
+      "en": "Close the firing circuits.",
+      "say": "Це́пи стрельбы́ включи́ть.",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "armed",
+      "speaker": "operator",
+      "ru": "Цепи включены. Готов к пуску.",
+      "en": "Circuits closed. Ready to launch.",
+      "say": "Це́пи включены́. Гото́в к пу́ску.",
+      "length_scale": 1.05,
+      "noise_scale": 0.4
+    },
+    {
+      "id": "fire_1",
+      "speaker": "officer",
+      "ru": "Пуск!",
+      "en": "Launch!",
+      "say": "Пуск!"
+    },
+    {
+      "id": "fire_salvo",
+      "speaker": "officer",
+      "ru": "Залпом, пуск!",
+      "en": "Salvo, launch!",
+      "say": "За́лпом, пуск!"
+    },
+    {
+      "id": "away_1",
+      "speaker": "operator",
+      "ru": "Первая пошла.",
+      "en": "First away.",
+      "say": "Пе́рвая пошла́."
+    },
+    {
+      "id": "away_2",
+      "speaker": "operator",
+      "ru": "Вторая пошла.",
+      "en": "Second away.",
+      "say": "Втора́я пошла́.",
+      "length_scale": 1.05
+    },
+    {
+      "id": "away_3",
+      "speaker": "operator",
+      "ru": "Третья пошла.",
+      "en": "Third away.",
+      "say": "Тре́тья пошла́."
+    },
+    {
+      "id": "away_4",
+      "speaker": "operator",
+      "ru": "Четвёртая пошла.",
+      "en": "Fourth away.",
+      "say": "Четвёртая пошла́."
+    },
+    {
+      "id": "complete",
+      "speaker": "operator",
+      "ru": "Залп произведён.",
+      "en": "Salvo complete.",
+      "say": "Залп произведён.",
+      "length_scale": 1.15
+    },
+    {
+      "id": "kill",
+      "speaker": "operator",
+      "ru": "Есть попадание! Цель поражена!",
+      "en": "Hit! Target destroyed!",
+      "say": "Есть попада́ние! Цель пораже́на!"
+    },
+    {
+      "id": "neutralized",
+      "speaker": "officer",
+      "ru": "Цель поражена. Отбой.",
+      "en": "Target destroyed. Stand down.",
+      "say": "Цель пораже́на. Отбо́й.",
+      "length_scale": 1.15
+    },
+    {
+      "id": "abort",
+      "speaker": "officer",
+      "ru": "Отбой стрельбы!",
+      "en": "Cease fire!",
+      "say": "Отбо́й стрельбы́!",
+      "length_scale": 1.05
+    },
+    {
+      "id": "track_lost",
+      "speaker": "operator",
+      "ru": "Сопровождение сорвано.",
+      "en": "Track lost.",
+      "say": "Сопровожде́ние со́рвано.",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "out_of_zone",
+      "speaker": "operator",
+      "ru": "Цель вне зоны поражения.",
+      "en": "Target outside the engagement zone.",
+      "say": "Цель вне зо́ны пораже́ния.",
+      "noise_scale": 0.4
+    },
+    {
+      "id": "refused",
+      "speaker": "operator",
+      "ru": "Пуск невозможен.",
+      "en": "Unable to launch.",
+      "say": "Пуск невозмо́жен."
+    },
+    {
+      "id": "incoming",
+      "speaker": "officer",
+      "ru": "Воздушная тревога! Ракетная атака!",
+      "en": "Air raid! Missile attack!",
+      "say": "Возду́шная трево́га! Раке́тная ата́ка!",
+      "length_scale": 1.05,
+      "noise_scale": 0.4
+    },
+    {
+      "id": "hit_us",
+      "speaker": "officer",
+      "ru": "Попадание в корабль! Аварийным партиям действовать!",
+      "en": "We are hit! Damage control, act!",
+      "say": "Попада́ние в кора́бль! Авари́йным па́ртиям де́йствовать!"
+    }
+  ]
+}
