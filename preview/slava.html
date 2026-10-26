@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Slava exterior preview</title>
+<link rel="icon" href="data:,">
+<style>
+  html, body { margin: 0; background: #8a9aa2; overflow: hidden; }
+  canvas { display: block; }
+  #label { position: absolute; top: 10px; left: 12px; color: #fff; font: 12px monospace; text-shadow: 0 1px 2px #000; }
+</style>
+</head>
+<body>
+<div id="label">SLAVA EXTERIOR PREVIEW</div>
+<script type="module">
+// Slava exterior preview. Imports only the Slava exterior module (and, with full=1, the composed
+// ship from src/models/slava.js when it exists). URL parameters:
+//   view=bow|port|stern|sbow|top|close|mast|bridge|aft|game  preset cameras (bow, port, stern and
+//        sbow are matched to the reference photographs, see the presets)
+//   cam=x,y,z  target=x,y,z  fov=deg  up=x,y,z   explicit camera (ship-local metres)
+//   sun=elevationDeg,azimuthDeg  mono=1 (greyscale, to compare with B/W photos)  crew=0  only=hull,deck,...
+//   full=1 composes the whole ship (exterior + weapons + bridge) via buildSlava()
+//   interior=1 builds the exterior with bridgeInterior (the bridge level open for a walk-in room)
+//   proxies=1 adds plain weapon stand-ins at SLAVA_MOUNTS (preview/slava.js)
+import * as THREE from 'three';
+import { buildSlavaExterior, SLAVA_MOUNTS } from '../src/models/slava-exterior.js';
+import { buildWeaponProxies } from './slava.js';
+import { buildSlavaShip } from '../src/models/slava/ship.js';
+
+const q = new URLSearchParams(location.search);
+const num = (k, d) => (q.has(k) ? Number(q.get(k)) : d);
+const vec = (k, d) => (q.has(k) ? q.get(k).split(',').map(Number) : d);
+window.addEventListener('error', (e) => { window.previewError = String(e.message || e); });
+window.addEventListener('unhandledrejection', (e) => { window.previewError = String(e.reason && e.reason.stack || e.reason); });
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = num('exposure', 1.0);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+document.body.append(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xb9c4c8);
+scene.fog = new THREE.Fog(0xb9c4c8, 900, 4000);
+scene.add(new THREE.HemisphereLight(0xdde8f0, 0x3c4a50, num('amb', 0.8)));
+const [sunEl, sunAz] = vec('sun', [38, 210]);
+const sun = new THREE.DirectionalLight(0xfff1dc, 3.2);
+const el = THREE.MathUtils.degToRad(sunEl), az = THREE.MathUtils.degToRad(sunAz);
+sun.position.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(450);
+sun.castShadow = q.get('noshadow') !== '1';
+sun.shadow.mapSize.set(4096, 4096);
+Object.assign(sun.shadow.camera, { left: -150, right: 150, top: 150, bottom: -150, near: 10, far: 900 });
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.1;
+scene.add(sun);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+const envScene = new THREE.Scene();
+envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  vertexShader: 'varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+  fragmentShader: 'varying vec3 p; void main(){ float h = normalize(p).y; vec3 c = mix(vec3(.25,.3,.32), vec3(.75,.82,.88), smoothstep(-.2,.6,h)); gl_FragColor = vec4(c,1.); }',
+})));
+scene.environment = pmrem.fromScene(envScene).texture;
+scene.environmentIntensity = num('env', 0.4);
+
+const water = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.MeshStandardMaterial({ color: 0x2d3f44, roughness: 0.35, metalness: 0.1 }));
+water.rotation.x = -Math.PI / 2;
+water.position.y = -0.05;
+water.receiveShadow = true;
+scene.add(water);
+
+const t0 = performance.now();
+let ship;
+if (q.get('full') === '1') {
+  const mod = await import('../src/models/slava.js');
+  const full = mod.buildSlava();
+  ship = { group: full.group, weapons: full.weapons?.group || null, bridge: full.bridge || null, animate: (t, dt) => full.animate(t, dt, {}) };
+} else if (q.get('dev') === '1') {
+  const s = buildSlavaShip({ only: q.get('only') ? q.get('only').split(',') : null });
+  ship = { group: s.root, weapons: null, animate: (t) => s.update(t), stats: s.stats };
+} else {
+  ship = buildSlavaExterior({ crew: q.get('crew') !== '0', hullNumber: q.get('number') || '108', bridgeInterior: q.get('interior') === '1' });
+}
+const buildMs = performance.now() - t0;
+scene.add(ship.group);
+// proxies=1: plain stand-ins for the weapons at SLAVA_MOUNTS (silhouette checks before the weapons exist)
+if (q.get('proxies') === '1') ship.group.add(ship.weapons = buildWeaponProxies(SLAVA_MOUNTS));
+
+// Preset cameras (ship-local metres). bow, port, stern and sbow are solved from correspondences
+// on the reference photographs (see docs/MODELLED.md, Slava exterior).
+const presets = {
+  // refs/photos/slava/slava-1983-port-dpla.jpg (3000 x 1986, hull 126): port bow quarter; solved
+  // from 18 correspondences, rms about 13 px. The height is weakly determined (it trades against
+  // the distance and the lens): about 110 m up at 930 m, high enough that the horizon stays above
+  // the frame as in the photograph and the forecastle deck shows its photographed width.
+  bow: { cam: [-821.66, 109.2, -429.88], target: [-557.64, 74.38, -291.76], up: [0.0913, 0.9929, 0.0758], fov: 6.721, aspect: 3000 / 1986 },
+  // refs/photos/slava/slava-1986-port-beam.jpg (3000 x 2310): near-orthographic port beam, camera
+  // about 18 m up (the horizon's height on the ship), 11.75 px per metre
+  port: { cam: [-1600, 18.2, 8.5], target: [0, 43.3, 8.5], fov: 7.0, aspect: 3000 / 2310 },
+  // refs/photos/slava/slava-1984-elevated-port.jpg (2984 x 2108, hull 108): high on the port beam;
+  // solved from 16 correspondences, rms about 9 px
+  elev: { cam: [-738.4, 658.23, 93.83], target: [-513.41, 461.86, 65.17], up: [0.6542, 0.7553, -0.039], fov: 7.774, aspect: 2984 / 2108 },
+  // refs/photos/slava/slava-1986-port-quarter.jpg (2202 x 1765, hull 108): high on the port
+  // quarter; solved from 16 correspondences, rms about 19 px, with the height held at 140 m (about
+  // 15 degrees, which the forecastle deck's visible width needs; height and distance trade otherwise)
+  stern: { cam: [-433.27, 139.4, 302.64], target: [-192.9, 67.1, 138.34], up: [0.2173, 0.97, -0.1089], fov: 13.909, aspect: 2202 / 1765 },
+  // refs/photos/slava/slava-class-1985-aerial-starboard-bow.jpg (3000 x 2170, hull 126): low starboard
+  // bow from about 8 m; solved from 8 correspondences, rms about 22 px
+  sbow: { cam: [250.43, 7.67, -276.28], target: [43.7, 17.12, -59.08], up: [0.0176, 0.9995, -0.0267], fov: 15.713, aspect: 3000 / 2170 },
+  top: { cam: [0, 400, 1], target: [0, 0, 0], fov: 30 },
+  close: { cam: [45, 32, -95], target: [0, 14, -40], fov: 40 },
+  mast: { cam: [40, 38, -45], target: [0, 26, -10], fov: 40 },
+  bridge: { cam: [20, 22, -60], target: [0, 18, -30], fov: 40 },
+  aft: { cam: [35, 20, 115], target: [0, 8, 60], fov: 40 },
+  game: { cam: [150, 60, -150], target: [0, 10, 0], fov: 48 },
+};
+const preset = presets[q.get('view') || 'bow'] || presets.bow;
+const camera = new THREE.PerspectiveCamera(num('fov', preset.fov), innerWidth / innerHeight, 0.3, 9000);
+camera.position.fromArray(vec('cam', preset.cam));
+const target = new THREE.Vector3().fromArray(vec('target', preset.target));
+if (q.has('up') || preset.up) camera.up.fromArray(vec('up', preset.up || [0, 1, 0]));
+camera.lookAt(target);
+if (q.get('mono') === '1') document.body.style.filter = 'grayscale(1) contrast(1.05)';
+
+// Visible meshes and triangles, split into the exterior, the weapons and the bridge room (full=1),
+// plus the exterior's per-tier totals: tier 0 always drawn, tier 1 to 950 m, tier 2 to 420 m.
+function stats() {
+  const out = { meshes: 0, tris: 0, exteriorMeshes: 0, exteriorTris: 0, weaponMeshes: 0, weaponTris: 0, bridgeMeshes: 0, bridgeTris: 0 };
+  const under = (o, g) => { for (let p = o; p; p = p.parent) if (p === g) return true; return false; };
+  ship.group.traverse((o) => {
+    if (!o.isMesh) return;
+    const g = o.geometry, n = (g.index ? g.index.count : g.attributes.position.count) / 3 * (o.isInstancedMesh ? o.count : 1);
+    out.meshes++; out.tris += n;
+    const k = ship.weapons && under(o, ship.weapons) ? 'weapon' : ship.bridge && under(o, ship.bridge) ? 'bridge' : 'exterior';
+    out[k + 'Meshes']++; out[k + 'Tris'] += n;
+  });
+  for (const k of Object.keys(out)) out[k] = Math.round(out[k]);
+  out.buildMs = Math.round(buildMs);
+  return out;
+}
+// Exterior meshes and triangles drawn with the camera at `d` metres (LOD tiers as the renderer picks them).
+function tiers() {
+  const res = {};
+  for (const [name, d] of [['near', 200], ['mid', 600], ['far', 1300]]) {
+    let m = 0, t = 0;
+    // (an LOD level's own visibility is the renderer's choice for the current camera: ignored)
+    const walk = (o, level = false) => {
+      if (!o.visible && !level) return;
+      if (o.isLOD) { const lv = [...o.levels].reverse().find((l) => d >= l.distance) || o.levels[0]; walk(lv.object, true); return; }
+      if (o.isMesh && !(ship.weapons && o === ship.weapons) ) { m++; const g = o.geometry; t += (g.index ? g.index.count : g.attributes.position.count) / 3 * (o.isInstancedMesh ? o.count : 1); }
+      for (const c of o.children) if (!(ship.weapons && c === ship.weapons) && !(ship.bridge && c === ship.bridge)) walk(c);
+    };
+    walk(ship.group);
+    res[name] = { meshes: m, tris: Math.round(t) };
+  }
+  return res;
+}
+
+let time = num('t', 1);
+renderer.info.autoReset = false;
+function render() {
+  ship.animate(time, 0.016, {});
+  renderer.info.reset();
+  renderer.render(scene, camera);
+  return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+}
+const first = render();
+window.preview = { ship, scene, camera, renderer, render, stats, tiers, first, THREE, setTime(t) { time = t; }, info: () => ({ ...stats(), ...render(), tiers: tiers(), regions: ship.stats }) };
+document.getElementById('label').textContent = `SLAVA EXTERIOR · ${JSON.stringify(stats())} · calls ${first.calls} tris ${first.triangles}`;
+if (q.get('label') === '0') document.getElementById('label').style.display = 'none';
+window.previewReady = true;
+</script>
+</body>
+</html>
