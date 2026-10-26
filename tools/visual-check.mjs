@@ -1,0 +1,13 @@
+import {chromium} from 'playwright-core';
+import fs from 'node:fs';
+const browser=await chromium.launch({executablePath:'/home/david/.cache/ms-playwright/chromium-1247/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];
+page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+await page.goto((process.env.ORLAN_URL||'http://127.0.0.1:5202')+'/?play=1',{waitUntil:'networkidle'});await page.waitForFunction(()=>!!window.__orlan);await page.evaluate(()=>{__orlan.stop();__orlan.sim.paused=true;});
+await page.screenshot({path:'shots/final-exterior.png'});
+await page.selectOption('#conditions','night');await page.evaluate(()=>{__orlan.post.exposure.first=true;__orlan.render();});await page.screenshot({path:'shots/night.png'});
+await page.selectOption('#conditions','overcast');await page.evaluate(()=>{__orlan.post.exposure.first=true;__orlan.render();});await page.screenshot({path:'shots/overcast.png'});
+await page.selectOption('#conditions','day');await page.evaluate(()=>{__orlan.sim.paused=false;__orlan.sim.fire('granit',__orlan.sim.contacts[0].id);for(let i=0;i<50;i++)__orlan.step(.05);__orlan.setView('missile');__orlan.render();});await page.screenshot({path:'shots/missile.png'});
+await page.click('[data-view="bridge"]');await page.evaluate(()=>{__orlan.render();});await page.screenshot({path:'shots/final-bridge.png'});
+await page.evaluate(()=>{__orlan.setView('external');__orlan.render();});await page.setViewportSize({width:1280,height:720});await page.evaluate(()=>__orlan.render());await page.screenshot({path:'shots/1280.png'});
+console.log(JSON.stringify({errors,audio:await page.evaluate(async()=>{await __orlan.audio.ready;return __orlan.audio.stats;}),views:'day,night,overcast,missile,bridge,1280x720'}));await browser.close();

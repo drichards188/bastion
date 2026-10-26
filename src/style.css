@@ -1,0 +1,185 @@
+:root{font-family:'IBM Plex Mono',monospace;color:#d7e4df;background:#081318;font-size:11px;font-synthesis:none;--line:#729e9b35;--teal:#83c8bc;--amber:#e6bb76;--red:#e77f6d}*{box-sizing:border-box}body{margin:0;overflow:hidden}button{font:inherit;color:inherit;background:#15272b;border:1px solid var(--line);cursor:pointer;transition:background .15s,color .15s}button:hover{background:#2b4748;color:#fff}button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}button:disabled{opacity:.4;cursor:not-allowed}#app,#world,#labels{position:absolute;inset:0;width:100%;height:100%}#labels{pointer-events:none;overflow:hidden}header{height:76px;position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:linear-gradient(#081318ed,#08131890);border-bottom:1px solid var(--line);letter-spacing:1.4px}.brand{display:flex;gap:12px;align-items:center;font-size:25px;font-weight:600}.emblem{color:var(--amber);font-size:33px}.brand small{display:block;font-size:8px;color:#8fa6a7;letter-spacing:2px;margin-top:2px}.mission-heading{font-size:12px}.mission-heading small{display:block;font-size:8px;color:#8fa6a7;margin-top:6px}.live-dot{display:inline-block;width:5px;height:5px;background:var(--teal);border-radius:50%;margin-right:9px;box-shadow:0 0 12px var(--teal)}.clock{text-align:right;font-size:23px;font-variant-numeric:tabular-nums}.clock small{display:block;font-size:8px;color:#8fa6a7;margin-top:2px}.panel{background:#0a191de8;border:1px solid var(--line);box-shadow:0 8px 24px #0002;backdrop-filter:blur(8px)}.section-title{font-size:10px;letter-spacing:1.5px;padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:#c2d4cd}.section-title span{color:#789491;font-size:8px}.section-title button{border:0;background:none;font-size:9px;color:var(--teal);padding:0}#views{position:absolute;top:93px;left:24px;display:flex;gap:2px}#views button{padding:10px 13px;font-size:9px;color:#779391;background:#102125dd}#views button span{margin-left:7px;color:#c0cecb}#views button.active{border-bottom:2px solid var(--teal);color:var(--teal);background:#203b3c}#ship-panel{position:absolute;left:24px;top:143px;width:280px}.ship-status{display:flex;justify-content:space-between;padding:16px 14px 10px}.ship-status b{display:block;font-size:23px;font-weight:400}.ship-status small{display:block;font-size:8px;letter-spacing:1.1px;color:#7c9d99;margin-top:4px}.hull-bar{height:3px;background:#ffffff13;margin:0 14px 12px}.hull-bar i{display:block;background:var(--teal);height:100%;transition:width .2s}.helm{display:flex;gap:4px;margin:0 14px 8px}.helm button{padding:8px;flex:1;font-size:9px;white-space:nowrap}.muted{color:#8ca4a1;font-size:10px;line-height:1.6}#helm-order{text-align:center;font-size:8px;letter-spacing:1px}.system-row{display:flex;gap:5px;padding:12px 14px}.system-row button{flex:1;font-size:8px;padding:8px 4px;background:none}.system-row b{display:block;color:var(--teal);font-size:10px;margin-top:5px}#systems{padding:0 14px 12px;font-size:8px;display:flex;justify-content:space-between}#tactical{position:absolute;right:24px;top:93px;width:280px}.scope{position:relative;aspect-ratio:1;background:radial-gradient(#153a3490,#0a191d 72%);margin:10px 10px 0}#radar{width:100%;height:100%;cursor:crosshair}.scope-n{position:absolute;left:49%;top:4px;font-size:8px;color:var(--teal)}.scope-caption{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-size:7px;letter-spacing:1.5px;color:#648782;pointer-events:none}.legend{display:flex;justify-content:space-around;padding:5px 5px 12px;font-size:7px}.cyan{color:var(--teal)}.amber{color:var(--amber)}.red{color:var(--red)}#contacts{max-height:180px;overflow:auto;scrollbar-width:thin;scrollbar-color:#3c6761 #112024}.contact{width:100%;border:0;border-top:1px solid var(--line);background:transparent;display:grid;grid-template-columns:18px 1fr auto;align-items:center;text-align:left;padding:10px 12px;gap:5px}.contact.selected{background:#33564c70;border-left:2px solid var(--teal)}.contact b{font-size:10px;font-weight:500}.contact small{display:block;color:#7c9c97;font-size:8px;margin-top:3px}.contact .distance{font-size:9px;color:var(--amber)}#orders{position:absolute;left:24px;bottom:218px;width:320px}#log{padding:4px 14px 8px;max-height:130px;overflow:hidden}.log-entry{display:flex;gap:10px;border-bottom:1px solid #5c85701a;padding:7px 0;font-size:9px;line-height:1.4}.log-entry time{color:#5a8981;font-size:8px;white-space:nowrap}.log-entry:first-child{color:var(--amber)}#weapons{position:absolute;left:24px;right:24px;bottom:55px;max-width:960px;margin:auto}.target-line{display:flex;gap:15px;align-items:center;padding:12px 15px;border-bottom:1px solid var(--line);font-size:8px;color:#6e9790;letter-spacing:1px}.target-line strong{color:#d8e3d9;font-size:11px;font-weight:500}.target-line>span:last-child{margin-left:auto;color:#91ada6;font-size:8px;letter-spacing:0}.weapon-row{display:flex;gap:7px;padding:10px 12px}.weapon{flex:1;text-align:left;padding:10px 12px;background:#132629;min-width:0}.weapon.active{border-color:var(--teal);background:#26423f}.weapon small{display:block;font-size:7px;letter-spacing:1px;color:#8ca6a1}.weapon b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:500;letter-spacing:1px;margin:4px 0}.weapon span{display:block;font-size:9px;color:#8ca6a1}.weapon em{float:right;font-style:normal;color:var(--teal);font-size:15px;margin-top:-4px}#fire{width:180px;flex:none;background:#82674030;border-color:#ac895e;color:#f4d3a0}#fire span{display:block;font-size:8px;letter-spacing:1.1px}#fire b{display:block;font-size:25px;font-weight:500;margin-top:8px}#fire small{font-size:8px;font-weight:400;border:1px solid #ac895e;padding:3px;vertical-align:middle}.weapon-footer{display:flex;justify-content:space-between;align-items:center;padding:0 15px 10px;color:#8faea6;font-size:8px;gap:10px}.weapon-footer button{padding:5px 10px;font-size:8px}.weapon-footer>span:first-child{flex:1}footer{position:absolute;bottom:0;left:0;right:0;height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#081318db;font-size:8px;letter-spacing:1px;color:#8aa49d}.time-controls{display:flex;gap:5px;align-items:center}.time-controls button{padding:6px 10px;font-size:8px}.time-controls span{min-width:26px;text-align:center;color:var(--amber)}.track-label{position:absolute;color:var(--red);font-size:8px;white-space:nowrap;text-shadow:0 1px 3px #000;transform:translate(-50%,-50%)}.track-label.selected{color:#ffe0a5}.track-label i{display:block;width:13px;height:13px;border:1px solid currentColor;margin:0 auto 5px;transform:rotate(45deg)}.track-label.selected i{width:18px;height:18px}.track-label small{display:block;text-align:center;font-size:8px;margin-top:3px}#toast{position:absolute;left:50%;top:145px;transform:translateX(-50%);padding:12px 20px;background:#102326ef;border:1px solid #b79565;color:var(--amber);opacity:0;transition:opacity .2s;pointer-events:none;max-width:500px;line-height:1.6;text-align:center}.overlay{position:absolute;inset:0;background:linear-gradient(90deg,#051216ed 0%,#08151ac9 42%,#08151a22 100%);display:flex;align-items:center;padding:5vh 8vw;z-index:20;overflow:auto}.hidden{display:none!important}.intro-card{width:500px;max-width:100%}.eyebrow{font-size:9px;letter-spacing:2.3px;color:var(--amber)}h1{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:100px;letter-spacing:8px;line-height:.9;margin:25px 0 15px;color:#e2e9dc}h1 span{display:block;font:11px 'IBM Plex Mono',monospace;letter-spacing:18px;color:#8fb4a8;margin-top:18px}.intro-subtitle{font-size:14px;letter-spacing:3px;border-top:1px solid #8ca29c42;padding-top:22px;margin-top:25px}.intro-card>p{color:#a6b7af;font-size:12px;line-height:1.9;margin:18px 0 22px}.briefing{border-top:1px solid var(--line)}.briefing>div{display:flex;gap:18px;padding:12px 0;border-bottom:1px solid var(--line)}.briefing>div>span{color:var(--amber);font-size:13px;padding-top:2px}.briefing p{margin:0;color:#8da69c;font-size:10px;line-height:1.8}.briefing b{display:block;color:#d0ded2;font-size:10px;font-weight:500;letter-spacing:1px}#start{width:100%;padding:18px 20px;text-align:left;background:#b6c5a7;color:#15231f;font-size:12px;letter-spacing:2px;font-weight:600;margin:25px 0 15px}#start:hover{background:#d5dfc5}#start span{float:right;font-size:18px;line-height:12px}.intro-note{color:#748c82;font-size:9px;line-height:1.8}.help-card{max-width:600px;width:100%;margin:auto;background:#0b1c20f5;border:1px solid var(--line);padding:35px}h2{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:500;margin:18px 0}.help-card p{color:#a2b7ae;font-size:11px;line-height:1.8}.help-card dl{display:grid;grid-template-columns:125px 1fr;font-size:11px;line-height:2.5}.help-card dt{color:var(--amber)}.help-card dd{margin:0}.help-card>button{padding:14px 20px;width:100%;margin-top:20px;background:#34524a}.stat{display:flex;justify-content:space-between;padding:12px;border-bottom:1px solid var(--line)}
+/* Dedicated view and command console: combat controls never cover the ship. */
+:root { --view-width: 46%; --header-height: 66px; --footer-height: 40px; }
+header { height:var(--header-height); padding:0 20px; background:#09171c; }
+#viewport { position:absolute; top:var(--header-height); bottom:var(--footer-height); left:0; width:var(--view-width); overflow:hidden; border-right:1px solid #6a958866; }
+#world,#labels { position:absolute; inset:0; width:100%; height:100%; }
+#views { top:12px;left:12px;right:12px;gap:3px; }
+#views button { padding:10px 12px; }
+#toast { top:70px;left:50%;width:calc(100% - 40px);max-width:440px;font-size:10px; }
+.view-caption { position:absolute; bottom:15px;left:16px;right:16px;font-size:9px;letter-spacing:2px;color:#c4d6d1;text-shadow:0 1px 6px #000;pointer-events:none; }
+.view-caption span { float:right;color:#8faea6;font-size:8px;letter-spacing:1px; }
+#command-panel { position:absolute;left:var(--view-width);right:0;top:var(--header-height);bottom:var(--footer-height);padding:10px;display:grid;grid-template-rows:minmax(280px,1fr) auto 154px;gap:8px;background:#091619;min-width:0; }
+.panel { background:#102125;border:1px solid #46635b70;box-shadow:none;backdrop-filter:none;min-width:0; }
+#command-panel #tactical,#command-panel #weapons,#command-panel #ship-panel,#command-panel #orders { position:relative;inset:auto;width:auto;max-width:none;margin:0;min-height:0; }
+#tactical { display:grid;grid-template-columns:minmax(0,1fr) 190px;grid-template-rows:35px minmax(0,1fr) 24px;overflow:hidden;background:#0a1c20; }
+#tactical>.section-title { grid-column:1/-1;padding:10px 13px; }
+#tactical>.section-title button { color:#c3e8cb;font-size:11px;border:1px solid #558c7766;padding:3px 10px; }
+.radar-area { grid-column:1;grid-row:2;container-type:size;display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden;background:radial-gradient(ellipse at center,#17392d80,#081a1e 75%); }
+#tactical .scope { position:relative; margin:0;width:min(100cqw,100cqh);height:min(100cqw,100cqh);aspect-ratio:1;background:none; }
+#radar { display:block;width:100%;height:100%; }
+.scope-n { top:2%;font-size:10px; }
+.scope-caption { bottom:2%;font-size:8px;letter-spacing:1px; }
+#tactical .legend { grid-column:1;grid-row:3;padding:5px 6px;font-size:8px; }
+.track-list { grid-column:2;grid-row:2/4;min-height:0;display:flex;flex-direction:column;border-left:1px solid var(--line);background:#102326; }
+.track-list-title { padding:10px;font-size:9px;letter-spacing:1.5px;border-bottom:1px solid var(--line);color:#91b2a3; }
+.track-list-title span { float:right;color:var(--amber); }
+#contacts { min-height:0;flex:1;max-height:none;overflow:auto; }
+.contact { padding:11px 8px;grid-template-columns:12px minmax(0,1fr) auto;gap:4px; }
+.contact b { font-size:9px;white-space:normal; }
+.contact small { font-size:8px; }
+.contact .distance { font-size:9px; }
+#sensor-status { padding:8px;font-size:8px;line-height:1.8;color:#84a898;border-top:1px solid var(--line); }
+#weapons { overflow:hidden; }
+.target-line { padding:8px 11px;gap:8px;flex-wrap:wrap; }
+.target-line>span:first-child { font-size:7px; }
+.target-line>span:last-child { font-size:8px; }
+.weapon-row { padding:7px 9px;gap:6px; }
+.weapon { padding:7px 10px; }
+.weapon b { font-size:18px;letter-spacing:.5px;margin:3px 0; }
+.weapon small { font-size:7px; }
+.weapon span { font-size:9px; }
+.fire-sequence { padding:0 9px 6px; }
+.sequence-heading { display:flex;align-items:center;gap:10px;font-size:8px;letter-spacing:1px;padding:2px 0 7px;color:#86a99d; }
+.sequence-heading strong { color:var(--amber);font-weight:500;font-size:9px;letter-spacing:.4px; }
+.sequence-heading label { margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap; }
+select { font:inherit;color:#c9dfd2;background:#142b2c;border:1px solid var(--line);padding:4px 7px;font-size:9px; }
+.sequence-actions { display:grid;grid-template-columns:1.4fr 1fr .8fr 1fr auto;gap:5px; }
+.sequence-actions button { font-size:9px;padding:9px 5px;white-space:nowrap; }
+.sequence-actions button small { color:#789a8c;font-size:8px;margin-right:4px; }
+.sequence-actions button.next { border-color:#bda16f;background:#493f2b55; }
+#fire { width:auto;min-width:0; }
+#fire>span { display:none; }
+#fire b { font-size:15px;margin:0; }
+#fire small { font-size:7px;padding:2px; }
+#arm { color:#edc492; }
+#abort { color:#cc9a8d;font-size:8px; }
+.sequence-meter { height:2px;background:#0005;margin-top:6px; }
+.sequence-meter i { display:block;height:100%;width:0;background:var(--teal);transition:width .15s linear; }
+.weapon-footer { padding:0 10px 7px;font-size:8px;gap:5px;min-height:25px; }
+#weapon-status { line-height:1.5; }
+#ciws-status { font-size:7px; }
+.support-row { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;min-height:0; }
+#ship-panel { display:grid;grid-template-columns:1fr 1fr;grid-template-rows:25px 46px 29px 29px 18px; }
+#ship-panel .section-title { grid-column:1/-1;padding:6px 10px;font-size:9px; }
+.ship-status { grid-column:1/-1;padding:5px 10px; }
+.ship-status b { font-size:18px; }
+.ship-status small { font-size:7px;margin-top:2px; }
+.hull-bar { display:none; }
+.helm { grid-column:1;margin:0 5px 3px 8px;gap:3px; }
+.helm button { padding:4px;font-size:7px; }
+#helm-order { grid-column:2;align-self:center;font-size:7px; }
+.system-row { grid-column:1/-1;padding:0 8px;gap:4px; }
+.system-row button { display:flex;align-items:center;justify-content:center;gap:8px;padding:4px;font-size:7px; }
+.system-row b { display:inline;margin:0;font-size:9px; }
+#systems { grid-column:1/-1;padding:3px 8px 0;font-size:7px; }
+#orders .section-title { padding:6px 9px;min-height:25px;font-size:9px; }
+#phase { max-width:55%;text-align:right;font-size:7px;letter-spacing:0; }
+#log { max-height:125px;overflow:auto;padding:2px 9px 5px;scrollbar-width:thin; }
+.log-entry { padding:6px 0;font-size:8px;gap:6px; }
+footer { height:var(--footer-height);padding:0 14px; }
+.time-controls { gap:4px; }
+.time-controls button { padding:5px 7px; }
+#camera-hint { font-size:7px;letter-spacing:.5px; }
+#conditions { max-width:140px;font-size:8px; }
+body.clean #viewport #labels,body.clean #viewport #views,body.clean #viewport #toast,body.clean .view-caption { display:none; }
+@media(min-width:1700px) { #tactical { grid-template-columns:minmax(0,1fr) 230px; }.contact b{font-size:11px}.contact small{font-size:9px}.weapon b{font-size:22px} }
+@media(max-height:780px) and (min-width:901px) { :root{--header-height:56px;--footer-height:34px}#command-panel{padding:7px;gap:6px;grid-template-rows:minmax(230px,1fr) auto 128px}.support-row{grid-template-columns:1fr 1fr}#ship-panel{grid-template-rows:22px 36px 25px 26px 15px}.ship-status{padding:3px 8px}.ship-status b{font-size:16px}.ship-status small{font-size:6px}#log{max-height:100px}.weapon{padding:5px 8px}.weapon b{font-size:16px}.weapon-row{padding:5px 7px}.sequence-actions button{padding:7px 4px}.target-line{padding:6px 9px}.sequence-heading{padding-bottom:4px}.weapon-footer{padding-bottom:5px}.intro-card{transform:scale(.86);transform-origin:left center} }
+@media(max-width:1200px) and (min-width:901px) { :root{--view-width:43%}#tactical{grid-template-columns:minmax(0,1fr) 158px}.brand{font-size:21px}.mission-heading{font-size:10px}#camera-hint{display:none}.time-controls{margin-left:auto}.weapon b{font-size:16px}#ciws-status{display:none}.sequence-actions button{font-size:8px}.sequence-actions button small{display:none}#fire small{display:none}.helm button{font-size:6px} }
+@media(max-width:900px) { :root{--header-height:54px;--footer-height:38px}header{padding:0 12px}.brand{font-size:20px}.mission-heading{display:none}.clock{font-size:18px}#viewport{width:100%;height:30%;bottom:auto}#command-panel{left:0;top:calc(var(--header-height) + 30%);padding:6px;gap:6px;grid-template-rows:minmax(210px,1fr) auto;overflow:auto}.support-row{display:none}#tactical{grid-template-columns:minmax(0,1fr) 170px;min-height:210px!important}#camera-hint,#quality{display:none}.time-controls{margin-left:auto}#views{top:8px;left:8px}#views button{padding:7px;font-size:8px}.view-caption{bottom:8px;font-size:7px}.view-caption span{font-size:7px}#toast{top:45px;padding:8px;font-size:9px}.weapon b{font-size:16px}.weapon{padding:5px 7px}.weapon-row{padding:5px 7px}.sequence-actions button{font-size:8px;padding:7px 3px}.sequence-heading{font-size:7px}.sequence-heading strong{font-size:8px}.target-line{padding:6px 8px}.overlay{padding:25px}.intro-card{transform:none}h1{font-size:65px}.briefing>div{padding:8px 0}.help-card{padding:20px}.help-card dl{grid-template-columns:85px 1fr;font-size:9px} }
+@media(max-width:520px) { #tactical{grid-template-columns:minmax(0,1fr) 130px}.contact{grid-template-columns:10px 1fr;padding:7px 5px}.contact .distance{grid-column:2;font-size:8px}.contact b{font-size:8px}.contact small{font-size:7px}.legend span{font-size:6px}#tactical .legend{font-size:6px;padding:6px 2px}.weapon b{font-size:12px}.weapon small{font-size:6px;letter-spacing:0}.weapon em{font-size:12px}.sequence-actions button small,#fire small,#ciws-status{display:none}.sequence-actions{gap:3px}.sequence-heading{gap:5px;letter-spacing:0}.sequence-heading strong{font-size:7px}.weapon-footer{font-size:7px}.time-controls button{padding:5px 4px;font-size:7px}#conditions{max-width:95px;font-size:7px}.time-controls{gap:3px} }
+
+/* Helm and reports share the track sidebar, leaving the radar the full console height. */
+#command-panel {grid-template-rows:minmax(280px,1fr) auto;}
+#tactical {grid-template-columns:minmax(0,1fr) 210px;}
+.track-list {overflow:auto;scrollbar-width:thin;}
+#contacts {flex:1 0 88px;}
+#command-panel #ship-panel {display:grid;flex:none;height:130px;border-left:0;border-right:0;grid-template-rows:23px 36px 24px 28px 16px;}
+#ship-panel .section-title {padding:5px 8px;}
+.ship-status {padding:4px 8px;}.ship-status b{font-size:17px}.ship-status small{font-size:6px;}
+.helm {grid-column:1/-1;margin:0 8px 3px;}.helm button{font-size:8px;}
+#helm-order {display:none;}
+.system-row {grid-row:4;}.system-row button {display:block;font-size:6px;}.system-row b{display:block;font-size:8px;margin-top:2px;}
+#systems {grid-row:5;font-size:6px;}
+.command-log {border-top:1px solid var(--line);flex:none;background:#0a1b1d;}
+.command-log summary {cursor:pointer;padding:9px;font-size:8px;letter-spacing:1px;color:#a4b6a7;}
+#command-panel #orders {border:0;max-height:135px;}
+#orders .section-title{font-size:8px;}#log{max-height:102px;}
+@media(min-width:1700px){#tactical{grid-template-columns:minmax(0,1fr) 240px;}}
+@media(max-height:780px) and (min-width:901px){#command-panel{grid-template-rows:minmax(250px,1fr) auto;}}
+@media(max-width:1200px) and (min-width:901px){#tactical{grid-template-columns:minmax(0,1fr) 190px;}}
+@media(max-width:900px){#command-panel{grid-template-rows:minmax(220px,1fr) auto;}#tactical{grid-template-columns:minmax(0,1fr) 170px;}.track-list{overflow:auto;}#contacts{flex:1 0 95px;}}
+@media(max-width:520px){#tactical{grid-template-columns:minmax(0,1fr) 135px;}#command-panel #ship-panel{height:120px;grid-template-rows:21px 32px 22px 27px 15px;}.ship-status b{font-size:13px}.ship-status small{font-size:5px}.helm button{font-size:6px;padding:3px}.system-row{padding:0 4px;}.system-row button{font-size:5px;}.system-row b{font-size:7px;}#systems{font-size:5px;padding:2px 4px;}}
+
+@media(max-width:1200px){#views button{padding:8px 7px;font-size:8px}#views button span{margin-left:4px}}
+
+/* Title and loading screens cover the whole page: nothing is built behind them until TAKE COMMAND. */
+#intro{background:radial-gradient(120% 90% at 78% 40%,#123038 0%,#081a1f 45%,#040d10 100%);}
+#loading{background:radial-gradient(120% 90% at 50% 40%,#11303a 0%,#071418 60%,#030a0c 100%);justify-content:center;z-index:30;}
+.loading-card{width:560px;max-width:100%;}
+.loading-card h2{margin:14px 0 22px;}
+.loading-track{height:3px;background:#ffffff14;}
+.loading-track i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s ease-out;box-shadow:0 0 10px var(--teal);}
+.loading-label{margin-top:10px;font-size:10px;letter-spacing:1px;color:#9fb7ae;min-height:16px;}
+#loading.failed .loading-label{color:var(--red);line-height:1.7;}
+#loading.failed .loading-track i{background:var(--red);box-shadow:none;}
+.loading-howto{margin-top:34px;border-top:1px solid var(--line);padding-top:16px;color:#8da69c;font-size:10px;line-height:1.7;}
+.loading-howto b{color:var(--amber);font-weight:500;letter-spacing:2px;font-size:9px;}
+.loading-howto ol{margin:10px 0 0;padding-left:20px;}
+.loading-howto li{padding:3px 0;}
+.loading-howto li span{color:#d0ded2;margin-right:8px;}
+
+/* Fire-control coach: always says what to do next, and why a step is blocked. */
+/* Fixed two-line height: changing advice must not resize the panel (and with it the radar). */
+.coach{display:flex;gap:10px;align-items:baseline;padding:7px 9px;margin:0 0 6px;height:42px;overflow:hidden;background:#83c8bc14;border-left:2px solid var(--teal);font-size:9px;line-height:1.5;color:#c9d8d0;}
+.coach span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.coach b{color:var(--teal);font-weight:500;letter-spacing:1px;white-space:nowrap;font-size:8px;}
+.coach.warn{background:#e6bb7614;border-left-color:var(--amber);}
+.coach.warn b{color:var(--amber);}
+.sequence-actions button.next:not(:disabled){animation:next-step 1.4s ease-in-out infinite;color:#f4e2bf;}
+@keyframes next-step{0%,100%{box-shadow:0 0 0 0 #e6bb7600;}50%{box-shadow:0 0 0 2px #e6bb7666,0 0 14px #e6bb7633;}}
+
+/* Can this weapon engage the designated contact? */
+.weapon .fit{display:block;font-style:normal;font-size:7px;letter-spacing:1px;margin-top:3px;min-height:10px;color:#7c9c97;}
+.weapon .fit.ok{color:var(--teal);}
+.weapon .fit.warn{color:var(--amber);}
+.weapon .fit.no{color:#6f7f7b;}
+#ciws-toggle b{font-weight:500;}
+
+/* Salvo size: a visible 1 to 4 picker in the fire-control heading. */
+.salvo-picker{margin-left:auto;display:flex;align-items:center;gap:3px;}
+.salvo-picker span{font-size:8px;letter-spacing:1.2px;color:#9fb7ae;margin-right:4px;}
+.salvo-picker .salvo-unit{margin:0 0 0 4px;color:#6f8f88;}
+.salvo-picker button{width:26px;height:22px;padding:0;font-size:11px;background:#132629;}
+.salvo-picker button.active{background:#5a4a2c;border-color:var(--amber);color:#fbe5bd;}
+
+/* Weapon envelope caption on the scope. */
+#envelope-caption{color:#c9ac65;}
+
+/* Follow camera caption. */
+#follow-hud{position:absolute;left:50%;top:140px;transform:translateX(-50%);padding:8px 14px;background:#081418d9;border:1px solid var(--line);font-size:9px;letter-spacing:1px;color:#d5e2da;white-space:nowrap;pointer-events:none;text-align:center;}
+#follow-hud b{color:var(--amber);font-weight:500;margin-right:6px;}
+#follow-hud small{display:block;margin-top:4px;font-size:7px;color:#7f9c95;}
+
+/* Crew callout subtitles, over the bottom of the 3D view. */
+#subtitle{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);max-width:92%;padding:7px 14px;background:#061014d0;border-left:2px solid var(--amber);color:#e9eadb;font-size:11px;letter-spacing:.4px;line-height:1.4;opacity:0;transition:opacity .25s;pointer-events:none;text-align:center;}
+#subtitle.show{opacity:1;}
+
+/* Ship choice on the title screen. */
+.ship-choice{display:flex;gap:8px;margin:18px 0 6px;}
+.ship-card{flex:1;text-align:left;padding:12px 14px;background:#0d1f23;border:1px solid var(--line);line-height:1.5;}
+.ship-card small{display:block;font-size:8px;letter-spacing:1.5px;color:#7f9c95;}
+.ship-card b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:500;letter-spacing:2px;color:#dfe7da;margin:4px 0 2px;}
+.ship-card b span{font:9px 'IBM Plex Mono',monospace;letter-spacing:3px;color:#8fb4a8;margin-left:8px;}
+.ship-card i{display:block;font-style:normal;font-size:9px;color:#a9bab2;}
+.ship-card em{display:block;font-style:normal;font-size:8px;color:var(--amber);margin-top:6px;letter-spacing:.5px;}
+.ship-card.active{border-color:var(--teal);background:#1b3a38;box-shadow:inset 0 0 0 1px var(--teal);}
+.ship-card:not(.active):hover{background:#15302f;}
+@media(max-width:600px){.ship-choice{flex-direction:column;}}
+
+/* Radar range: a button per scale in the tactical heading. */
+.range-picker{display:flex;align-items:center;gap:3px;}
+.range-picker span{font-size:8px;letter-spacing:1.2px;color:#789491;margin-right:4px;}
+.section-title .range-picker button{min-width:30px;height:22px;padding:0 6px;font-size:10px;color:#a9c4bc;background:#132629;border:1px solid var(--line);}
+.section-title .range-picker button:hover{background:#2b4748;color:#fff;}
+.section-title .range-picker button.active{background:#1f4a45;border-color:var(--teal);color:#e8f5ef;}

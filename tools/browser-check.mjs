@@ -1,0 +1,15 @@
+import {chromium} from 'playwright-core';
+import fs from 'node:fs';
+const exe=['chromium-1247','chromium-1217'].map(d=>`${process.env.HOME}/.cache/ms-playwright/${d}/chrome-linux64/chrome`).find(p=>fs.existsSync(p));
+const browser=await chromium.launch({executablePath:exe,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[];
+page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+await page.goto('http://127.0.0.1:5202/?play=1',{waitUntil:'networkidle'});
+await page.waitForFunction(()=>!!window.__orlan,{timeout:60000});
+await page.screenshot({path:'shots/title.png'});
+await page.waitForTimeout(1500);
+await page.screenshot({path:'shots/exterior.png'});
+await page.click('[data-view="bridge"]');await page.waitForTimeout(500);
+await page.screenshot({path:'shots/bridge.png'});
+console.log(JSON.stringify({errors,state:await page.evaluate(()=>({contacts:__orlan.sim.contacts.length,drawCalls:__orlan.renderer.info.render.calls,triangles:__orlan.renderer.info.render.triangles,bridge:__orlan.camera.position.toArray(),stats:__orlan.sim.stats}))}));
+await browser.close();
