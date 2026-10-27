@@ -125,3 +125,25 @@ test('model launch frames place the round in its cell along its bore, carried by
  const x0=m.pos.x;s.updateMissile(m,0.05);assert.ok(Math.abs(m.pos.x-x0-(m.fwd.x*m.speed+10)*0.05)<0.05,'round keeps the ship velocity while clearing the launcher');
  s.setLaunchFrames(null);s.cooldowns.granit=0;const d=s.fire('granit',s.contacts[0].id).missile;assert.equal(d.carry,null);
 });
+test('a rippled Granit salvo runs in low while one scout pops up; a lone round just flies low',()=>{
+ const s=start(),t=s.contacts[0],fired=[];t.samRounds=0;
+ while(fired.length<3){if(s.canFire('granit',t.id).ok)fired.push(s.fire('granit',t.id).missile);advance(s,0.05);}
+ assert.equal(new Set(fired.map(m=>m.salvo)).size,1);assert.deepEqual(fired.map(m=>!!m.scout),[true,false,false]);
+ advance(s,24-s.time);assert.ok(fired[0].pos.y>400,'scout popped up');assert.ok(fired.slice(1).every(m=>m.pos.y<100),'pack stays low');
+ advance(s,10);assert.ok(fired[0].pos.y<80,'scout back down with the pack');
+ const lone=start(),r=lone.fire('granit',lone.contacts[0].id).missile;advance(lone,30);assert.ok(!r.scout);assert.ok(r.pos.y<60);
+ advance(lone,10);const later=lone.fire('granit',lone.contacts[0].id).missile;assert.notEqual(later.salvo,r.salvo,'rounds far apart are separate salvos');
+});
+test('when the scout is lost the next round with room rises to take over',()=>{
+ const s=start(),t=s.contacts[0],fired=[];t.samRounds=0;
+ while(fired.length<3){if(s.canFire('granit',t.id).ok)fired.push(s.fire('granit',t.id).missile);advance(s,0.05);}
+ advance(s,20-s.time);fired[0].alive=false;advance(s,6);
+ assert.equal(fired[1].scout,true);assert.ok(fired[1].pos.y>400);assert.ok(fired[2].pos.y<100);
+ assert.ok(s.log.some(l=>/scout lost; round 2 rising/.test(l.text)));
+});
+test('the frigate SAM engages only a popped-up scout, never a lone sea-skimmer',()=>{
+ const s=start(),t=s.contacts[0];let fired=0;
+ for(let i=0;i<20*60;i++){if(fired<4&&s.canFire('granit',t.id).ok){s.fire('granit',t.id);fired++;}s.update(0.05);}
+ const sam=s.log.filter(l=>/SAM/.test(l.text));assert.ok(sam.length>0);assert.ok(sam.every(l=>/scout/.test(l.text)));
+ const lone=start(),u=lone.contacts[0];lone.fire('granit',u.id);advance(lone,60);assert.equal(u.samRounds,4);
+});

@@ -26,8 +26,18 @@ export const ANTI_SHIP = new Set(['granit', 'bazalt']);
 //   straight    s of unguided flight along the launcher's axis before guidance starts
 //   climbG      g available to pitch over and turn in the first seconds of guided flight
 //   g           g available to turn in cruise (turns at Mach 1.5 are kilometres wide)
+// Granit salvos: open sources report that one round of a salvo climbs higher and designates the
+// target for the rest, which stay low; that it "climbs in short pop-ups, so as to be harder to
+// intercept"; and that if it is destroyed the next round rises to take its place (en.wikipedia P-700
+// Granit, an article under an accuracy dispute that notes the description has been doubted). Nothing
+// is published on heights or timing, so these are estimates. Rounds rippled at one target (no more
+// than 1.5 launcher intervals apart) form a salvo; a lone round has nobody to scout for and flies low.
+//   scout       m a pop-up climbs toward (it tops out near 550 m before dropping back)
+//   popUp       s of climb in each pop-up
+//   popEvery    s from one pop-up to the next; a new scout pops up at once
+//   scoutTo     m to go, inside which the scout stops popping up and no round takes over
 export const ASM = {
-  granit: { boost: 2.5, boostAccel: 120, straight: 2.5, climbG: 8, g: 6, cruiseLow: 25, cruiseHigh: 14000, highBeyond: 100000, attackLeg: 40000 },
+  granit: { boost: 2.5, boostAccel: 120, straight: 2.5, climbG: 8, g: 6, cruiseLow: 25, cruiseHigh: 14000, highBeyond: 100000, attackLeg: 40000, scout: 1000, popUp: 4, popEvery: 15, scoutTo: 12000 },
   bazalt: { boost: 2, boostAccel: 150, straight: 2.5, climbG: 4, g: 5, cruiseLow: 45, cruiseHigh: 5000, highBeyond: 60000, attackLeg: 30000 },
 };
 // Playable ships. Magazines and the anti-ship weapon differ; Fort, Osa and the AK-630s work the same.
@@ -58,8 +68,8 @@ export class Simulation {
       autoDefense:{enumerable:true,get:()=>auto.fort||auto.osa,set:v=>{auto.fort=auto.osa=!!v;}},
       ciwsAuto:{enumerable:true,get:()=>auto.gun,set:v=>{auto.gun=!!v;}} }); }
     this.cooldowns = {granit:0,bazalt:0,fort:0,osa:0,gun:0,chaff:0}; this.chaffCharges = 8; this.chaffUntil = 0; this.chaffPos = new Vector3(); this.lastAuto = 0; this.lastSweep = -3; this.completedWaves = new Set(); this.missionDuration = 780;
-    this.addContact('ship','Sierra 01 · frigate',new Vector3(11500,0,-23500),new Vector3(-4,0,3),{intel:true,nextAttack:110,shots:0});
-    this.addContact('ship','Sierra 02 · frigate',new Vector3(-17000,0,-28000),new Vector3(4,0,2),{intel:true,nextAttack:175,shots:0});
+    this.addContact('ship','Sierra 01 · frigate',new Vector3(11500,0,-23500),new Vector3(-4,0,3),{intel:true,nextAttack:110,shots:0,samRounds:4,nextSam:0});
+    this.addContact('ship','Sierra 02 · frigate',new Vector3(-17000,0,-28000),new Vector3(4,0,2),{intel:true,nextAttack:175,shots:0,samRounds:4,nextSam:0});
     this.addContact('plane','Raid 01 · A-6E',new Vector3(15000,2200,-27000),new Vector3(-95,0,150),{attackAt:75,escaped:false});
     this.addContact('plane','Raid 02 · A-6E',new Vector3(15500,2300,-27500),new Vector3(-95,0,150),{attackAt:79,escaped:false});
     this.waveVariation=Array.from({length:5},()=>({bearing:(this.random()-0.5)*28,range:0.94+this.random()*0.12}));
@@ -129,7 +139,9 @@ export class Simulation {
     const pos=p.pos.clone().add(local), dir=frame?.dir?frame.dir.clone().applyAxisAngle(up,angle).normalize():kind==='fort'?new Vector3(0,1,0):forward(p.heading).setY(ANTI_SHIP.has(kind)?0.7:0.6).normalize();
     const speed=frame?.speed??(kind==='fort'?28:70);
     // A round leaving a moving ship keeps the ship's velocity while it clears its launcher (carry).
-    const m={id:`m${this.nextId++}`,kind,pos,vel:dir.clone().multiplyScalar(speed),fwd:dir,alive:true,hostile:false,targetId,age:0,speed,distance:0,blind:0,launchPos:pos.clone(),slot,motor:kind!=='fort',carry:frame?p.vel.clone():null};
+    const m={id:`m${this.nextId++}`,kind,pos,vel:dir.clone().multiplyScalar(speed),fwd:dir,alive:true,hostile:false,targetId,age:0,speed,distance:0,blind:0,launchPos:pos.clone(),launchTime:this.time,slot,motor:kind!=='fort',carry:frame?p.vel.clone():null};
+    // A round rippled after the last one at the same target joins its salvo; otherwise it starts one.
+    if(ANTI_SHIP.has(kind)) { const last=[...this.missiles].reverse().find(x=>x.salvo&&x.kind===kind&&x.targetId===targetId); m.salvo=last&&this.time-last.launchTime<=w.interval*1.5?last.salvo:m.id; }
     this.missiles.push(m); this.note(`${w.name} AWAY → ${t.name}`); this.events.launch?.(m); if(kind==='fort')this.events.coldLaunch?.(m); return {ok:true,reason:'LAUNCHED',missile:m};
   }
   launchHostile(origin,{altitude=60,name='Harpoon',offset=0}={}) {
@@ -176,6 +188,7 @@ export class Simulation {
       else if(this.time-c.lastSeen>8)c.detected=false;
     } }
     if(Object.values(p.auto).some(Boolean) && this.time-this.lastAuto>=0.25) { this.lastAuto=this.time;this.automaticDefense(); }
+    this.assignScouts();
     for(const m of this.missiles) if(m.alive) this.updateMissile(m,dt);
     if(p.hp<=0) this.finish('defeat','KIROV LOST. Damage-control teams cannot contain the flooding.');
     else if(this.time>=640 && !this.contacts.some(c=>c.alive) && !this.missiles.some(m=>m.alive&&m.hostile)) this.finish('victory','MISSION COMPLETE. Surface group disabled; incoming raid defeated.');
@@ -212,6 +225,33 @@ export class Simulation {
     if(nearest?.alive&&range<1800&&c.defenseRounds>0&&this.time>=c.nextDefense) {
       c.defenseRounds--;c.nextDefense=this.time+2.5;this.events.ciws?.(c.pos.clone().add(new Vector3(0,15,0)),nearest.pos.clone());
       if(this.random()<0.16) {nearest.alive=false;this.events.explosion?.(nearest.pos.clone(),0.6);this.note(`${c.name}: defensive gunfire destroyed an incoming GRANIT.`);}
+    }
+    // The frigate's area SAM (Standard SM-1MR) engages a salvo's scout while it is popped up; a scout
+    // back down among the sea-skimmers when the SAM arrives is lost to it. Gameplay rule: rounds still
+    // climbing out after launch are left alone. One SAM in the air at a time, abstract odds.
+    const scout=inbound.find(m=>m.scout&&m.pos.y>200&&m.pos.distanceTo(c.pos)<25000);
+    if(scout&&c.samRounds>0&&!c.sam&&this.time>=c.nextSam) {c.samRounds--;c.nextSam=this.time+8;c.sam={m:scout,at:this.time+scout.pos.distanceTo(c.pos)/900};this.note(`${c.name}: SAM launched at the ${WEAPONS[scout.kind].name.replace(/^.* /,'')} scout.`);}
+    if(c.sam&&this.time>=c.sam.at) {const m=c.sam.m,name=WEAPONS[m.kind].name.replace(/^.* /,'');c.sam=null;
+      if(m.alive&&m.pos.y<=200) this.note(`${c.name}: SAM lost the ${name} scout as it dropped back to the sea.`);
+      else if(m.alive&&this.random()<0.4){m.alive=false;this.events.explosion?.(m.pos.clone(),0.5);this.note(`${c.name}: SAM destroyed the ${name} scout.`);}}
+  }
+  // Salvo roles (ASM scout to scoutTo): the earliest round still far enough out scouts while the salvo
+  // has two or more rounds in the air, popping up every popEvery seconds. Losing it hands the job to
+  // the next round that has the room, which pops up at once.
+  assignScouts() {
+    const salvos=new Map();
+    for(const m of this.missiles) if(m.alive&&m.salvo&&ASM[m.kind]?.scout) (salvos.get(m.salvo)||salvos.set(m.salvo,[]).get(m.salvo)).push(m);
+    for(const [id,rounds] of salvos) {
+      const P=ASM[rounds[0].kind],t=this.contacts.find(c=>c.id===rounds[0].targetId);
+      let lead=rounds.find(m=>m.scout);
+      if(rounds.length<2) {if(lead)lead.scout=false;continue;}
+      if(!lead&&t) {
+        lead=rounds.find(m=>m.pos.distanceTo(t.pos)>P.scoutTo); if(!lead) continue;
+        lead.scout=true; lead.nextPop=this.time;
+        if(this.scouted?.has(id)) this.note(`${WEAPONS[lead.kind].name.replace(/^.* /,'')} SALVO: scout lost; round ${this.missiles.filter(m=>m.salvo===id).indexOf(lead)+1} rising to take over.`);
+        (this.scouted||=new Set()).add(id);
+      }
+      if(lead&&t&&this.time>=lead.nextPop&&lead.pos.distanceTo(t.pos)>P.scoutTo) {lead.popUntil=this.time+P.popUp;lead.nextPop=this.time+P.popEvery;}
     }
   }
   automaticDefense() {
@@ -259,16 +299,19 @@ export class Simulation {
       const P=ASM[m.kind],high=m.profile==='high'||(m.profile!=='low'&&m.launchPos.distanceTo(t.pos)>P.highBeyond);
       // Cruise height: low over the sea, or high on long shots, gliding down (about 8.5 degrees) to
       // reach the low attack run with attackLeg still to go; the last 3 km close on the target itself.
-      const cruise=high?clamp((dist-P.attackLeg)*0.15,P.cruiseLow,P.cruiseHigh):P.cruiseLow;
+      let cruise=high?clamp((dist-P.attackLeg)*0.15,P.cruiseLow,P.cruiseHigh):P.cruiseLow;
+      // A salvo's scout climbs out of the pack in short pop-ups, then drops back down to it.
+      if(m.scout&&this.time<m.popUntil) cruise=Math.max(cruise,P.scout);
       // Faster in the thin air up high: Mach 2.5 near the top of the profile, sea-level speed low down.
       targetSpeed=w.speed+(w.highSpeed-w.speed)*clamp(m.pos.y/(P.cruiseHigh*0.6),0,1);
       aim.addScaledVector(t.vel||new Vector3(),Math.min(dist/targetSpeed,45));
       // Hold the cruise height instead of flying a straight line at the target: steer for a point a
-      // short way ahead on the horizontal track, raised or lowered by the height error (at most about
-      // 15 degrees of climb or dive). The last 3 km close on the target itself.
+      // short way ahead on the horizontal track, raised or lowered by twice the height error (at most
+      // about 15 degrees of climb or dive), so a round settles from its climb-out or a pop-up in seconds;
+      // three times the error overshoots Bazalt into the sea. The last 3 km close on the target itself.
       if(dist>3000) {
         const look=2500,hx=aim.x-m.pos.x,hz=aim.z-m.pos.z,hl=Math.hypot(hx,hz)||1;
-        aim.set(m.pos.x+hx/hl*look,m.pos.y+clamp(cruise-m.pos.y,-look*0.27,look*0.27),m.pos.z+hz/hl*look);
+        aim.set(m.pos.x+hx/hl*look,m.pos.y+clamp((cruise-m.pos.y)*2,-look*0.27,look*0.27),m.pos.z+hz/hl*look);
       } else aim.y=6;
     } else if(m.hostile) {
       aim.addScaledVector(p.vel,Math.min(dist/267,15));

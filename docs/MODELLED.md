@@ -17,7 +17,7 @@ The simulation runs in fixed 0.05-second steps and can run without a browser. It
 - **Ship handling:** course changes and acceleration take time. Propulsion damage limits speed.
 - **Sensors:** contacts depend on radar state, range, sweep updates and a simplified radar horizon. Reconnaissance supplies initial surface intelligence.
 - **Weapons:** finite magazines, launch intervals, moving launch positions, minimum/maximum range, altitude gates, missile acceleration and turn limits.
-- **Guidance:** Fort and Osa depend on continuing radar support; prolonged guidance loss terminates the engagement. Granit and Bazalt leave along the launcher on their boosters, then turn under a g limit, cruise low (or high on long shots) and run in at sea-skimming height; `ASM` in `src/sim.js` separates the documented figures from the estimates.
+- **Guidance:** Fort and Osa depend on continuing radar support; prolonged guidance loss terminates the engagement. Granit and Bazalt leave along the launcher on their boosters, then turn under a g limit, cruise low (or high on long shots) and run in at sea-skimming height; `ASM` in `src/sim.js` separates the documented figures from the estimates. Granit rounds rippled at one target fly as a salvo: the pack runs in low while one round, the scout, climbs out of it in short pop-ups (to about 550 m every 15 s) and drops back. If the scout is lost, the next round with room rises at once to take over. A lone round flies low. Open sources report the scout, its pop-ups and the takeover, and some doubt them; the heights and timing are estimates.
 - **Defense:** automatic crews select threats; Fort and Osa have limited target channels; AK-630 uses short-range bursts and ammunition. Chaff can divert some incoming seekers.
 - **Damage:** hull integrity and radar, propulsion and weapons condition are simplified game state, not structural or blast calculations.
 
@@ -35,7 +35,7 @@ Launches, impacts and CIWS bursts use positional sound. Distant explosions arriv
 
 ## Opposing crews
 
-Frigates zigzag and maneuver when Granits approach, with finite chaff releases and short-range defensive bursts. Those defensive opportunities use authored probabilities; they are not a complete Perry-class radar, Standard missile or CIWS simulation. Aircraft bank through their turns. Seeded variations alter approach bearings and ranges, so a salvo plan should be followed by assessment rather than assuming every missile will hit.
+Frigates zigzag and maneuver when Granits approach, with finite chaff releases and short-range defensive bursts. Each also has four area SAMs for a Granit salvo's scout while it is popped up; a scout already back among the sea-skimmers when the SAM arrives escapes it. Those defensive opportunities use authored probabilities; they are not a complete Perry-class radar, Standard missile or CIWS simulation. Aircraft bank through their turns. Seeded variations alter approach bearings and ranges, so a salvo plan should be followed by assessment rather than assuming every missile will hit.
 
 ## Crew
 

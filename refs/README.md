@@ -87,6 +87,7 @@ Text sources (facts and the conflicts between them are summarised in `docs/MODEL
 - militaryrussia.ru (Wayback copies of topics 398 Granit, 701 pr.1144, 21, 23 and 99): SM-233 "wet" start (the launcher filled with water), Granit inclined 60 degrees, the torus booster; AK-100 recoil 510 mm, line of fire 2.04 m, sweep radius 5.55 m.
 - [missilery.info](https://en.missilery.info/missile/granit) (Granit, Fort, Osa-M): hydraulically driven, splinter-proof Granit lids opened in a programmed sequence; Fort's gas-generator cold launch and ignition at 20 to 25 m, 3 s between rounds; ZIF-122 arms vertical in the magazine, reload 16 to 21 s.
 - ru.wikipedia (Kirov class, Fort, Osa-M, AK-630, AK-100), en.wikipedia (AK-630: 1.07 m above deck, 1.66 m sweep radius), navweaps.com and navypedia (two 3R41, two 4R33, four MR-123).
+- [en.wikipedia P-700 Granit](https://en.wikipedia.org/wiki/P-700_Granit), under a factual-accuracy dispute: the salvo tactic as "widely claimed", one round climbing to designate targets for the rest, in short pop-ups "so as to be harder to intercept", and the next round rising to take over if it is destroyed; the article notes the description "received some doubts". It gives no heights or timing.
 
 ## Slava exterior
 
