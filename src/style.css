@@ -199,3 +199,26 @@ body.clean #viewport #labels,body.clean #viewport #views,body.clean #viewport #t
 .gpu-actions{display:flex;gap:6px;margin-top:20px;}
 .gpu-actions button{flex:1;padding:14px 20px;background:#34524a;}
 .gpu-actions button.quiet{background:none;}
+
+/* Helm: each row reads the actual heading or speed and what the ship is doing about the order, over
+   the order itself, which you type or nudge. The panel stacks to its content instead of a fixed grid. */
+#command-panel #ship-panel {display:flex;flex-direction:column;height:auto;}
+#ship-panel .section-title b {font-weight:500;color:#d7e4df;}
+#ship-panel .helm {display:flex;flex-direction:column;gap:5px;margin:0;padding:5px 8px;}
+.helm-row {display:flex;flex-direction:column;gap:2px;}
+.helm-read {display:flex;flex-wrap:wrap;align-items:baseline;column-gap:6px;white-space:nowrap;}
+.helm-read small {flex:none;font-size:7px;letter-spacing:1px;color:#7c9d99;min-width:44px;}
+.helm-read b {font-size:15px;font-weight:400;font-variant-numeric:tabular-nums;}
+.helm-read span {margin-left:auto;font-size:8px;color:#7c9d99;font-variant-numeric:tabular-nums;}
+.helm-read span.active {color:var(--amber);}
+.helm-read span.warn {color:var(--red);}
+.helm-set {display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:3px;}
+#ship-panel .helm-set button {padding:5px 2px;font-size:8px;}
+.helm-set label {display:flex;align-items:center;gap:3px;padding:0 6px;border:1px solid #e6bb7655;background:#0b1a1e;cursor:text;}
+.helm-set label:focus-within {border-color:var(--amber);background:#1a2a26;}
+.helm-set input {flex:1;min-width:0;width:100%;padding:3px 0;border:0;outline:0;background:none;color:var(--amber);font:inherit;font-size:13px;text-align:right;font-variant-numeric:tabular-nums;}
+.helm-set label span {font-size:8px;color:#9fb0a5;}
+#ship-panel .system-row {padding:0 8px 4px;}
+#ship-panel .system-row button {display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:6px;padding:5px 4px;font-size:7px;}
+#ship-panel .system-row b {display:inline;margin:0;font-size:8px;}
+@media(max-width:520px){.helm-read b{font-size:12px}.helm-read small{min-width:0;letter-spacing:0}.helm-read span{font-size:6px}#ship-panel .helm-set button{font-size:7px;padding:4px 1px}.helm-set input{font-size:11px}}

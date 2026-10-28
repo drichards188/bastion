@@ -50,8 +50,9 @@ The firing sequence, keys and coach work the same on both. Slava has her own bri
 | `Space` | Authorize an already armed firing sequence |
 | ACQUIRE / PREPARE / ARM | Establish the selected track, prepare the launcher, then arm the firing circuit |
 | ABORT | Safe the sequence and cancel rounds not yet fired |
-| Left / right arrow | Change ordered heading |
-| Up / down arrow | Change ordered speed |
+| `N` | Type an ordered heading in the helm's HEADING box; `Enter` orders it, `Esc` cancels. The SPEED box below it takes knots the same way |
+| Left / right arrow | Ordered heading 5° to port / starboard (the ◀ 10° / 10° ▶ buttons move it 10°) |
+| Up / down arrow | Ordered speed 2 knots faster / slower (the − 5 / + 5 buttons move it 5) |
 | `R` | Toggle radar emissions |
 | `A` | All weapons automatic, or all manual |
 | `Shift+A` | The selected weapon automatic or manual (also the AUTO / MANUAL switch on its card) |
@@ -89,7 +90,7 @@ These are reconstructed playable command steps with game timings, not a claim to
 
 ## Ship handling and damage
 
-The cruiser changes course and speed gradually. Ordered heading/speed and actual motion need time to converge. Hits reduce hull integrity and can degrade radar, propulsion or weapons. There is no ammunition replenishment at sea during the mission.
+The cruiser changes course and speed gradually: she turns at about 0.7° a second and takes nearly two minutes to work up from 18 to 31 knots. The helm panel shows each as it is now (the large figure), the standing order (the amber box, where you can type a new one) and what the ship is doing about it: which way she is turning, how far she has to go and how long that will take, or STEADY once she is there. Propulsion damage caps her speed; the panel then says DAMAGED and shows the maximum. Hits reduce hull integrity and can degrade radar, propulsion or weapons. There is no ammunition replenishment at sea during the mission.
 
 Pause to inspect contacts and weapon readiness. Use 1× for the final seconds of an incoming raid and higher compression while awaiting distant missile arrivals. The bridge is a viewing and command station; this version does not include free walking through the rest of the ship.
 

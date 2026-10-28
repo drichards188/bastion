@@ -40,6 +40,8 @@ export const ASM = {
   granit: { boost: 2.5, boostAccel: 120, straight: 2.5, climbG: 8, g: 6, cruiseLow: 25, cruiseHigh: 14000, highBeyond: 100000, attackLeg: 40000, scout: 1000, popUp: 4, popEvery: 15, scoutTo: 12000 },
   bazalt: { boost: 2, boostAccel: 150, straight: 2.5, climbG: 4, g: 5, cruiseLow: 45, cruiseHigh: 5000, highBeyond: 60000, attackLeg: 30000 },
 };
+// Helm response, shared with the helm display's time estimates: rad/s of turn, m/s2 gaining and losing way.
+export const HELM = { turn: 0.012, accel: 0.06, decel: 0.12 };
 // Playable ships. Magazines and the anti-ship weapon differ; Fort, Osa and the AK-630s work the same.
 // damageScale: Slava displaces about half as much as Kirov, so each hit costs her more integrity.
 export const SHIPS = {
@@ -162,8 +164,8 @@ export class Simulation {
     this.time+=dt; const p=this.player;p.prev.copy(p.pos);
     // Missiles keep their previous step position so the renderer and the follow camera can interpolate.
     for(const m of this.missiles) if(m.alive) (m.prev||(m.prev=m.pos.clone())).copy(m.pos);
-    const yaw=wrap(p.desiredHeading-p.heading); p.heading=wrap(p.heading+clamp(yaw,-0.012*dt,0.012*dt));
-    const wanted=p.desiredSpeed*clamp(p.systems.propulsion/100,0.15,1); p.speed+=clamp(wanted-p.speed,-0.12*dt,0.06*dt); p.vel.copy(forward(p.heading)).multiplyScalar(p.speed);p.pos.addScaledVector(p.vel,dt);
+    const yaw=wrap(p.desiredHeading-p.heading); p.heading=wrap(p.heading+clamp(yaw,-HELM.turn*dt,HELM.turn*dt));
+    const wanted=p.desiredSpeed*clamp(p.systems.propulsion/100,0.15,1); p.speed+=clamp(wanted-p.speed,-HELM.decel*dt,HELM.accel*dt); p.vel.copy(forward(p.heading)).multiplyScalar(p.speed);p.pos.addScaledVector(p.vel,dt);
     this.script();
     for(const c of this.contacts) {
       c.prev=c.pos.clone(); if(!c.alive || c.type==='munition') continue;
